@@ -10,6 +10,20 @@
   var REG_ORDER = ['Sumut', 'Sumsel-Jabodetabek', 'Bandung', 'Jateng-DIY', 'Jatim-Indonesia Timur', 'Luar Negeri'];
   var LVL_ORDER = ['aktif', 'pernah aktif', 'pasif'];
   var RQ_LABEL = { RQ1: 'Makna', RQ2: 'Hambatan', RQ3: 'Program', RQ4: 'Struktur & iuran', RQ5: 'Kepercayaan', RQ6: 'Kesediaan' };
+  var RQ_FULL = {
+    RQ1: 'Apa makna Del Folks bagi alumni, dan apa yang mereka harapkan darinya?',
+    RQ2: 'Mengapa sebagian alumni tidak terlibat atau bergerak sendiri-sendiri? Hambatan apa yang dirasakan?',
+    RQ3: 'Program dan layanan apa yang dianggap paling bernilai?',
+    RQ4: 'Bagaimana penilaian alumni terhadap rancangan struktur, iuran wajib, pembagian regional, dan pemilihan ketua umum?',
+    RQ5: 'Tata kelola, komunikasi, dan akuntabilitas seperti apa yang membuat alumni percaya?',
+    RQ6: 'Peran apa yang bersedia diambil alumni, dengan syarat apa?'
+  };
+  var KODE_FULL = {
+    MAKNA: 'arti Del dan Del Folks bagi alumni', HARAPAN: 'program dan manfaat yang diharapkan', HAMBATAN: 'alasan tidak terlibat',
+    STRUKTUR: 'pandangan tentang bentuk organisasi', IURAN: 'sikap terhadap iuran', PEMILIHAN: 'cara memilih pengurus dan ketua',
+    KEPERCAYAAN: 'syarat agar alumni percaya pada pengurus', KOMUNIKASI: 'kanal dan cara komunikasi yang disukai',
+    KESEDIAAN: 'peran yang bersedia diambil', REGIONAL: 'kebutuhan khas tiap regional'
+  };
 
   var RAW = null, STATE = { jenis: '', regional: '', keterlibatan: '', rq: '' };
 
@@ -114,15 +128,16 @@
     Object.keys(target).forEach(function (k) { if (!(k in perJenis) && !STATE.jenis) perJenis[k] = 0; });
     html += panel('span-5 enter', 'Progres menuju target', 'per jenis kegiatan', rowsTarget(perJenis, target), 'Garis tegak = target. Target diatur di tab Config.');
     // weekly
-    html += panel('span-7 enter', 'Lembar masuk per minggu', 'sejak minggu ke-1 studi', weeklyCols(minggu), null);
+    var mulaiTxt = cfg.tanggalMulai ? new Date(cfg.tanggalMulai).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+    html += panel('span-7 enter', 'Lembar masuk per minggu', 'sejak minggu ke-1 studi', weeklyCols(minggu), 'M1 = minggu pertama studi' + (mulaiTxt ? ' (mulai ' + mulaiTxt + ')' : '') + ', M2 = minggu kedua, dan seterusnya. Kolom gelap = minggu berjalan.');
     // coverage weave (signature)
     html += panel('span-7 enter', 'Cakupan suara', 'regional × tingkat keterlibatan', weave(d), null, '<div class="legend"><span><i class="c"></i>sudah terwakili, makin gelap makin banyak</span><span><i class="g"></i>belum ada suara — prioritas ajakan berikutnya</span></div>');
     // per RQ
     var perRQ = count(t, 'rq');
-    html += panel('span-5 enter', 'Temuan per pertanyaan penelitian', '', rows(perRQ, { order: ['RQ1', 'RQ2', 'RQ3', 'RQ4', 'RQ5', 'RQ6'], label: function (k) { return k + ' ' + (RQ_LABEL[k] || ''); }, cls: 'toba2' }), 'RQ yang masih tipis perlu diperdalam di wawancara berikutnya.');
+    html += panel('span-5 enter', 'Temuan per pertanyaan penelitian', '', rows(perRQ, { order: ['RQ1', 'RQ2', 'RQ3', 'RQ4', 'RQ5', 'RQ6'], label: function (k) { return k + ' ' + (RQ_LABEL[k] || ''); }, title: function (k) { return RQ_FULL[k] || k; }, cls: 'toba2' }), 'RQ = pertanyaan penelitian (research question). Arahkan kursor ke label untuk membaca pertanyaan lengkapnya; daftar lengkap ada di Keterangan istilah di bawah.');
     // kode induk
     var perKode = {}; t.forEach(function (x) { var k = (x.kode_induk || '').split(/[\s:]+/)[0]; if (k) perKode[k] = (perKode[k] || 0) + 1; });
-    html += panel('span-4 enter', 'Temuan per kode induk', '', rows(perKode, {}), null);
+    html += panel('span-4 enter', 'Temuan per kode induk', '', rows(perKode, { title: function (k) { return KODE_FULL[k] || k; } }), 'Kode induk = kategori tema dalam codebook analisis.');
     // top tema
     var tema = {}; t.forEach(function (x) { var k = (x.tema || '').trim().toLowerCase(); if (k) tema[k] = (tema[k] || 0) + 1; });
     var top = sortedKeys(tema).slice(0, 18);
@@ -138,6 +153,7 @@
     // findings
     var latest = t.slice().reverse();
     html += panel('span-12 enter', 'Temuan terbaru', 'anonim · ' + fmt(latest.length) + ' temuan', findings(latest.slice(0, 12)) + (latest.length > 12 ? '<div class="more"><button class="btn ghost" id="more" type="button">Tampilkan 12 berikutnya</button></div>' : ''), null);
+    html += panel('span-12 enter', 'Keterangan istilah', 'cara membaca dashboard ini', glossary(cfg), null);
     html += '</div>';
     $('#app').innerHTML = html;
 
@@ -163,7 +179,7 @@
     var total = keys.reduce(function (s, k) { return s + o[k]; }, 0);
     return '<div class="rows">' + keys.map(function (k) {
       var v = o[k], pct = Math.round(100 * v / max);
-      return '<div class="row"><div class="lbl" title="' + esc(k) + '">' + esc(opt.label ? opt.label(k) : k) + '</div><div class="trk"><div class="fil ' + (opt.cls || '') + '" data-w="' + pct + '"></div></div><div class="val"><b>' + fmt(v) + '</b> · ' + Math.round(100 * v / total) + '%</div></div>';
+      return '<div class="row"><div class="lbl" title="' + esc(opt.title ? opt.title(k) : k) + '">' + esc(opt.label ? opt.label(k) : k) + '</div><div class="trk"><div class="fil ' + (opt.cls || '') + '" data-w="' + pct + '"></div></div><div class="val"><b>' + fmt(v) + '</b> · ' + Math.round(100 * v / total) + '%</div></div>';
     }).join('') + '</div>';
   }
   function rowsTarget(o, target) {
@@ -208,6 +224,24 @@
       }).join('') + '<td><div class="tot">' + tot + '</div></td></tr>';
     });
     return h + '</tbody></table>';
+  }
+
+  function glossary(cfg) {
+    var rq = Object.keys(RQ_FULL).map(function (k) { return '<tr><td><span class="tag">' + k + '</span></td><td><b>' + esc(RQ_LABEL[k]) + '</b> — ' + esc(RQ_FULL[k]) + '</td></tr>'; }).join('');
+    var kd = Object.keys(KODE_FULL).map(function (k) { return '<tr><td><span class="tag k">' + k + '</span></td><td>' + esc(KODE_FULL[k]) + '</td></tr>'; }).join('');
+    return '<div class="gloss">' +
+      '<div><h3>Pertanyaan penelitian (RQ)</h3><table class="gt">' + rq + '</table></div>' +
+      '<div><h3>Kode induk</h3><table class="gt">' + kd + '</table>' +
+      '<h3>Istilah lain</h3><table class="gt">' +
+      '<tr><td><b>M1, M2, …</b></td><td>Minggu ke-1, ke-2, dan seterusnya sejak studi dimulai' + (cfg.tanggalMulai ? ' (' + esc(new Date(cfg.tanggalMulai).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })) + ')' : '') + '.</td></tr>' +
+      '<tr><td><b>Lembar temuan</b></td><td>Satu dokumen hasil satu kegiatan (satu wawancara, satu obrolan Del Talks, satu FGD, atau satu voice note), berisi beberapa temuan.</td></tr>' +
+      '<tr><td><b>Temuan</b></td><td>Satu baris tema + kutipan + makna yang dicatat pewawancara; satu lembar biasanya berisi 3–7 temuan.</td></tr>' +
+      '<tr><td><b>Suara</b></td><td>Jumlah alumni yang didengar. Del Talks melibatkan dua alumni, jadi dihitung dua suara.</td></tr>' +
+      '<tr><td><b>Del Talks</b></td><td>Obrolan 20–40 menit antara dua alumni dengan kartu pemandu, direkam atau dirangkum.</td></tr>' +
+      '<tr><td><b>Keterlibatan</b></td><td><i>aktif</i> = ikut kegiatan alumni dalam 2 tahun terakhir; <i>pernah aktif</i> = pernah, lalu mundur; <i>pasif</i> = tidak pernah terlibat.</td></tr>' +
+      '<tr><td><b>Kode dokumen</b></td><td>Misal <code>T-2014-2016-R2-007</code>: jenis (W wawancara, T Del Talks, F FGD, V voice note), rentang angkatan, regional (R1 Sumut, R2 Sumsel-Jabodetabek, R3 Bandung, R4 Jateng-DIY, R5 Jatim-Indonesia Timur, R6 luar negeri), nomor urut. Tidak ada nama.</td></tr>' +
+      '<tr><td><b>Target</b></td><td>Jumlah lembar yang ingin dicapai per jenis kegiatan, ditetapkan tim riset di awal studi.</td></tr>' +
+      '</table></div></div>';
   }
 
   function findings(list) {

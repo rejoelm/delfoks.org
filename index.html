@@ -58,7 +58,7 @@
 <script src="assets/config.js"></script>
 <script>
 (function(){
-  var c=window.DELFOLKS||{};document.getElementById('pub-date').textContent=c.targetPublikasi||'—';
+  var c=window.DELFOLKS||{};document.getElementById('pub-date').textContent=c.targetPublikasi||'tanggal yang akan diumumkan';
   if(!c.endpoint)return;
   fetch(c.endpoint+'?format=json&_='+Date.now()).then(function(r){return r.json()}).then(function(j){
     var s=0,r={};(j.dokumen||[]).forEach(function(d){s+=d.jenis==='Del Talks'?2:1;if(d.regional)r[d.regional]=1});
