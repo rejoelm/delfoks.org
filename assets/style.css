@@ -297,6 +297,7 @@ footer a{color:var(--ink-2);display:inline-block;padding:3px 0}
   .nav{gap:0}.nav a{padding:7px 7px;font-size:13.5px}
 }
 @media (max-width:360px){
+  .nav a{padding:7px 5px;font-size:12.5px}.topbar .in{gap:8px}
   .filters{grid-template-columns:1fr}
   .kpis{grid-template-columns:1fr}
   .kpi{border-right:0;border-bottom:1px solid var(--line-2)}.kpi:last-child{border-bottom:0}

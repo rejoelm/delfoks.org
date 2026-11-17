@@ -111,6 +111,17 @@
   .coda .in{max-width:640px;margin:0 auto;display:grid;justify-items:center;gap:16px}
   .coda p{text-align:center}
   .coda .cta{justify-content:center}
+  .adart{padding:40px 20px 20px;background:var(--paper)}
+  .adart .card{max-width:860px;margin:0 auto;padding:28px 30px;border-radius:14px;background:#fff;border:1px solid var(--hair);box-shadow:0 1px 2px rgba(22,33,58,.06),0 18px 40px -24px rgba(22,33,58,.25);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 32px;align-items:start}
+  .adart h2{font-size:clamp(1.4rem,2.4vw,1.9rem);letter-spacing:-.01em;line-height:1.2}
+  .adart .k{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--biru-text);margin-bottom:8px}
+  .adart .lead{margin-top:10px;font-size:1rem}
+  .adart ol{margin:0;padding-left:22px;display:grid;gap:10px;font-size:15px;color:var(--ink-2)}
+  .adart ol b{color:var(--ink)}
+  .adart .cta{margin-top:18px}
+  .adart .note{margin-top:14px}
+  .adart[hidden]{display:none}
+  @media (max-width:720px){.adart .card{grid-template-columns:minmax(0,1fr);padding:22px 20px}}
   footer{background:var(--paper);border-top:1px solid var(--hair);padding:22px 20px max(22px,env(safe-area-inset-bottom));font-size:13px;color:var(--ink-3)}
   footer .in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 24px}
   footer a{color:var(--ink-2);display:inline-block;padding:3px 0}
@@ -122,7 +133,8 @@
     .scene.hero{padding-top:40svh}
     .bar{grid-template-columns:110px minmax(0,1fr) 40px}
   }
-  @media (max-width:420px){.tiles{grid-template-columns:1fr 1fr}.tile:last-child{grid-column:1/-1}.nav a{padding:7px 8px;font-size:13.5px}.copy{padding:18px 18px}}
+  @media (max-width:480px){.tiles{grid-template-columns:1fr 1fr}.tile:last-child{grid-column:1/-1}.brand span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.nav{gap:0}.nav a{padding:7px 7px;font-size:13.5px}.copy{padding:18px 18px}}
+  @media (max-width:360px){.nav a{padding:7px 5px;font-size:12.5px}.topbar .in{gap:8px}}
   @media (prefers-reduced-motion:reduce){.bar .f{transition:none}}
 </style>
 </head>
@@ -136,6 +148,7 @@
     <a href="index.html" aria-current="page">Beranda</a>
     <a href="studi.html">Studi</a>
     <a href="dashboard.html">Dashboard</a>
+    <a href="#adart">AD/ART</a>
   </nav>
 </header>
 <div class="badge" id="badge" role="status"><i></i><span>Memuat data…</span></div>
@@ -167,8 +180,8 @@
         <h2>Setiap alumni punya kursi.</h2>
         <p class="lead">Baris menunjukkan angkatan, blok menunjukkan regional. Tidak ada kursi yang lebih penting dari kursi lain. Yang ada hanya pandangan yang berbeda ke panggung yang sama.</p>
         <div class="legend">
-          <span><i style="background:linear-gradient(90deg,#1f7fc4,#7a3aa3,#d9822b,#2a9d7c,#c43d3d,#d4a12a);border-radius:3px;width:28px"></i>Satu warna per blok regional</span>
-          <span><i style="background:#1f7fc4"></i>Pekat: angkatan awal &nbsp;<i style="background:#9ac3e3"></i>Muda: angkatan terakhir</span>
+          <span><i style="background:linear-gradient(90deg,#2f8adc,#9b6bce,#cf5971,#cb6620,#2e9e52,#009ca4);border-radius:3px;width:28px"></i>Satu warna per blok regional</span>
+          <span><i style="background:#2f8adc"></i>Pekat: angkatan awal &nbsp;<i style="background:#7db8f2"></i>Muda: angkatan terakhir</span>
           <span><i style="background:var(--ungu);outline:2px solid #fff;outline-offset:1px"></i>Kursi yang sedang dipilih</span>
         </div>
         <p class="note">Enam blok dari kiri ke kanan: Sumut, Sumsel–Jabodetabek, Bandung, Jateng–DIY, Jatim–Indonesia Timur, luar negeri.</p>
@@ -230,6 +243,25 @@
     </div>
   </section>
 
+  <section class="adart" id="adart" aria-labelledby="adart-h">
+    <div class="card">
+      <div>
+        <div class="k">Draft AD/ART</div>
+        <h2 id="adart-h">Baca aturan mainnya, lalu beri komentar langsung di dokumennya.</h2>
+        <p class="lead">Draft Anggaran Dasar dan Anggaran Rumah Tangga Del Folks terbuka untuk dikomentari alumni. Sorot kalimat yang ingin kamu tanggapi dan tulis komentarmu; semua masukan dibahas sebelum Musyawarah Anggota.</p>
+        <div class="cta">
+          <a class="btn" id="adart-link" href="#" target="_blank" rel="noopener">Buka draft dan minta akses komentar<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <p class="note">Dibuka di Google Dokumen. Perlu akun Google (Gmail).</p>
+      </div>
+      <ol>
+        <li><b>Masuk dengan akun Google-mu.</b> Dokumen ini tidak dibuka untuk umum, jadi Google akan meminta kamu masuk dulu.</li>
+        <li><b>Klik “Minta akses” dan tulis nama serta angkatanmu</b> di kotak pesan, supaya kami tahu siapa yang meminta.</li>
+        <li><b>Tunggu persetujuan.</b> Permintaanmu masuk ke email koordinator; begitu disetujui, kamu mendapat akses sebagai pemberi komentar dan dokumen bisa dibuka dari tautan yang sama.</li>
+      </ol>
+    </div>
+  </section>
+
   <section class="coda" id="ikut">
     <div class="in">
       <h2>Ambil kursimu.</h2>
@@ -245,6 +277,7 @@
   <span>Del Folks · Alumni SMA Unggul Del, Laguboti</span>
   <a href="studi.html">Tentang studi</a>
   <a href="dashboard.html">Dashboard</a>
+  <a href="#adart">Draft AD/ART</a>
 </div></footer>
 
 <script id="site-data" type="application/json">{"schema":"delfolks-landing-1","diperbarui":"2026-11-18T00:20:00+07:00","config":{"tanggalPublikasi":"","target":{"Wawancara":12,"Del Talks":40,"FGD":6,"Voice note":30}},"dokumen":[],"temuan":[]}</script>
@@ -258,6 +291,8 @@
   var REG = ['Sumut', 'Sumsel-Jabodetabek', 'Bandung', 'Jateng-DIY', 'Jatim-Indonesia Timur', 'Luar Negeri'];
   var REG_SHORT = ['Sumut', 'Sumsel–Jabodetabek', 'Bandung', 'Jateng–DIY', 'Jatim–Ind. Timur', 'Luar negeri'];
   var $ = function (s) { return document.querySelector(s); };
+  (function () { var u = window.DELFOLKS && window.DELFOLKS.adart, sec = document.getElementById('adart'), a = document.getElementById('adart-link'); if (u && a) a.href = u; else if (sec) { sec.hidden = true; document.querySelectorAll('a[href="#adart"]').forEach(function (n) { n.hidden = true; }); } })();
+
   var fmt = function (n) { return n == null ? '—' : new Intl.NumberFormat('id-ID').format(n); };
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
@@ -320,8 +355,8 @@
   function mix(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
   var COL = { seat: hex('#b7c6d8'), front: hex('#3d8ac9'), back: hex('#9fb6cf'), lit: hex('#007cc2'), sel: hex('#6c2993'), dust: hex('#d3dce6'), biru: hex('#007cc2'), ungu: hex('#6c2993'), paper: hex('#f4f6f9') };
   // keanekaragaman: satu rumpun warna per blok regional, dipakai juga sebagai palet acak di aula
-  var PAL = ['#1f7fc4', '#7a3aa3', '#d9822b', '#2a9d7c', '#c43d3d', '#d4a12a'].map(hex);
-  var PAL_LIGHT = PAL.map(function (c) { return mix(c, COL.paper, 0.45); });
+  var PAL = ['#2f8adc', '#9b6bce', '#cf5971', '#cb6620', '#2e9e52', '#009ca4'].map(hex); // oklch L .62 C .15, hue 250/305/10/50/150/200
+  var PAL_LIGHT = ['#7db8f2', '#bca2e8', '#ec97a3', '#e9a077', '#7fc58c', '#4fc6cc'].map(hex); // oklch L .76 C .11
 
   var seatPos = [];
   var SEAT_W = NARROW ? 1.15 : 1.0, ROW_D = 1.7, RAKE = 0.36, AISLE = NARROW ? 1.4 : 1.6;
@@ -378,50 +413,73 @@
   world.add(new THREE.Points(geo, mat));
   // stage: a soft warm panel with a frame, and a floor line
   var screenTex = new THREE.CanvasTexture(document.createElement('canvas'));
-  var screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W, SCREEN_H), new THREE.MeshBasicMaterial({ map: screenTex, transparent: true, opacity: 0.96 }));
+  var screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W, SCREEN_H), new THREE.MeshBasicMaterial({ map: screenTex, transparent: true, opacity: 1 }));
   screen.position.set(0, SCREEN_Y0 + SCREEN_H / 2, STAGE_Z - 0.2); world.add(screen);
-  var NET = (function () {
-    var names = ['Sumut', 'Sumsel–Jabodetabek', 'Bandung', 'Jateng–DIY', 'Jatim–Ind. Timur', 'Luar negeri'];
-    var cols = ['#1f7fc4', '#7a3aa3', '#d9822b', '#2a9d7c', '#c43d3d', '#d4a12a'];
-    var hubs = [[0.1, 0.58], [0.3, 0.7], [0.43, 0.78], [0.56, 0.78], [0.73, 0.64], [0.88, 0.4]];
-    var home = [0.19, 0.4]; // Laguboti, tempat semua berasal
-    var r = 11; function rr() { r = (r * 16807) % 2147483647; return (r - 1) / 2147483646; }
-    var alumni = []; hubs.forEach(function (h, i) { var n = 12 + Math.floor(rr() * 8); for (var k = 0; k < n; k++) { var a = rr() * Math.PI * 2, d = 0.035 + rr() * 0.06; alumni.push([h[0] + Math.cos(a) * d * 0.5, h[1] + Math.sin(a) * d * 2, i]); } });
-    var edges = []; for (var i = 0; i < 6; i++) { edges.push([home, hubs[i], 2.5, 0.55]); for (var j = i + 1; j < 6; j++) edges.push([hubs[i], hubs[j], 1.2, 0.22]); }
-    return { names: names, cols: cols, hubs: hubs, home: home, alumni: alumni, edges: edges };
+  // layar: globe dengan simpul alumni di seluruh dunia yang saling terhubung (proyeksi ortografis di kanvas 2D)
+  var SCR = { bg: '#172641', bg2: '#0d152a', text: '#edf2f8', sub: '#bfccdb', globe: '#213459', line: '#608ab5', node: '#6ee5f9', home: '#ffbb53', arc: '#43d5dc' };
+  var GLOBE = (function () {
+    // [lat, lon] kota tempat alumni tersebar; indeks 0 = Laguboti, asal semua
+    var pts = [[2.4, 99.2], [-6.2, 106.8], [-6.9, 107.6], [-7.8, 110.4], [-7.3, 112.7], [-5.1, 119.4], [-8.7, 115.2], [3.6, 98.7], [1.35, 103.8], [3.1, 101.7],
+      [35.7, 139.7], [37.6, 127.0], [22.3, 114.2], [25.0, 121.5], [14.6, 121.0], [39.9, 116.4], [-33.9, 151.2], [-37.8, 145.0], [-36.8, 174.8], [28.6, 77.2],
+      [25.2, 55.3], [24.7, 46.7], [41.0, 29.0], [30.0, 31.2], [-1.3, 36.8], [-33.9, 18.4], [51.5, -0.1], [48.9, 2.4], [52.4, 4.9], [52.5, 13.4],
+      [55.8, 37.6], [59.3, 18.1], [40.7, -74.0], [42.4, -71.1], [43.7, -79.4], [37.8, -122.4], [49.3, -123.1], [34.1, -118.2], [19.4, -99.1], [-23.5, -46.6], [-34.6, -58.4], [-12.0, -77.0]];
+    var r = 7; function rr() { r = (r * 16807) % 2147483647; return (r - 1) / 2147483646; }
+    function v(p) { var la = p[0] * Math.PI / 180, lo = p[1] * Math.PI / 180; return [Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)]; }
+    var V = pts.map(v);
+    // sisi: tiap simpul ke dua tetangga terdekat, ditambah beberapa sisi jauh antar benua
+    var edges = {}, list = [];
+    function add(a, b) { var k = a < b ? a + '-' + b : b + '-' + a; if (edges[k] || a === b) return; edges[k] = 1; list.push([a, b]); }
+    V.forEach(function (a, i) { var d = V.map(function (b, j) { return [i === j ? 9 : Math.acos(Math.max(-1, Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]))), j]; }).sort(function (x, y) { return x[0] - y[0]; }); add(i, d[0][1]); add(i, d[1][1]); });
+    for (var k = 0; k < 14; k++) add(Math.floor(rr() * V.length), Math.floor(rr() * V.length));
+    for (var h = 1; h < 10; h++) add(0, h); // Laguboti ke kota-kota terdekat
+    var pulses = []; for (var q = 0; q < 10; q++) pulses.push({ e: Math.floor(rr() * list.length), ph: rr(), sp: 0.12 + rr() * 0.1 });
+    return { V: V, edges: list, pulses: pulses };
   })();
   function drawScreen(t) {
     var cv = screenTex.image, Wc = 2048, Hc = Math.round(2048 * SCREEN_H / SCREEN_W); if (cv.width !== Wc) { cv.width = Wc; cv.height = Hc; }
-    var g = cv.getContext('2d'), X = function (p) { return p[0] * Wc; }, Y = function (p) { return p[1] * Hc; };
-    var bg = g.createLinearGradient(0, 0, Wc, Hc); bg.addColorStop(0, '#fff8ea'); bg.addColorStop(1, '#f7efe0'); g.fillStyle = bg; g.fillRect(0, 0, Wc, Hc);
-    g.strokeStyle = 'rgba(176,116,22,.35)'; g.lineWidth = 6; g.strokeRect(3, 3, Wc - 6, Hc - 6);
-    // jejaring antar regional (tipis) dan ke Laguboti (tebal)
-    g.lineCap = 'round';
-    NET.edges.forEach(function (e) { g.strokeStyle = 'rgba(22,33,58,' + e[3] + ')'; g.lineWidth = e[2]; g.beginPath(); g.moveTo(X(e[0]), Y(e[0])); g.lineTo(X(e[1]), Y(e[1])); g.stroke(); });
-    // denyut yang berjalan dari Laguboti ke tiap regional dan kembali
-    NET.hubs.forEach(function (h, i) { var ph = (t * 0.18 + i * 0.17) % 1, k = ph < 0.5 ? ph * 2 : 2 - ph * 2; var x = X(NET.home) + (X(h) - X(NET.home)) * k, y = Y(NET.home) + (Y(h) - Y(NET.home)) * k; g.fillStyle = NET.cols[i]; g.beginPath(); g.arc(x, y, 7, 0, Math.PI * 2); g.fill(); });
-    // alumni di sekitar tiap regional
-    NET.alumni.forEach(function (a, k) { var h = NET.hubs[a[2]]; g.strokeStyle = NET.cols[a[2]]; g.globalAlpha = 0.35; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X(h), Y(h)); g.lineTo(X(a), Y(a)); g.stroke(); g.globalAlpha = 1; g.fillStyle = NET.cols[a[2]]; var pulse = 1 + 0.25 * Math.sin(t * 2 + k); g.beginPath(); g.arc(X(a), Y(a), 5 * pulse, 0, Math.PI * 2); g.fill(); });
-    // simpul regional
-    NET.hubs.forEach(function (h, i) { g.fillStyle = '#fff8ea'; g.beginPath(); g.arc(X(h), Y(h), 22, 0, Math.PI * 2); g.fill(); g.fillStyle = NET.cols[i]; g.beginPath(); g.arc(X(h), Y(h), 16, 0, Math.PI * 2); g.fill(); });
-    // Laguboti
-    g.fillStyle = '#fff8ea'; g.beginPath(); g.arc(X(NET.home), Y(NET.home), 30, 0, Math.PI * 2); g.fill();
-    g.fillStyle = '#16213a'; g.beginPath(); g.arc(X(NET.home), Y(NET.home), 20, 0, Math.PI * 2); g.fill();
-    g.strokeStyle = '#16213a'; g.lineWidth = 3; g.globalAlpha = 0.5 + 0.5 * Math.abs(Math.sin(t * 1.3)); g.beginPath(); g.arc(X(NET.home), Y(NET.home), 34 + 10 * Math.abs(Math.sin(t * 1.3)), 0, Math.PI * 2); g.stroke(); g.globalAlpha = 1;
-    // teks
-    g.fillStyle = '#16213a'; g.textAlign = 'center'; g.font = '700 ' + Math.round(Hc * 0.12) + 'px "Plus Jakarta Sans", system-ui, sans-serif';
-    g.fillText('Satu jejaring, enam regional, satu panggung', Wc * 0.5, Hc * 0.17);
-    g.font = '500 ' + Math.round(Hc * 0.058) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; g.fillStyle = '#3c4a63';
-    g.fillText('Dari Laguboti ke mana pun kita pergi, alumni Del tetap satu ikatan.', Wc * 0.5, Hc * 0.28);
-    g.font = '600 ' + Math.round(Hc * 0.05) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; g.fillStyle = '#16213a';
-    NET.hubs.forEach(function (h, i) { var dy = (i === 2 || i === 3) ? Hc * 0.1 : (i === 5 ? -Hc * 0.06 : Hc * 0.1); g.fillText(NET.names[i], X(h), Y(h) + dy); });
-    g.textAlign = 'left'; g.fillText('Laguboti', X(NET.home) + 36, Y(NET.home) - 14);
+    var g = cv.getContext('2d');
+    var bg = g.createLinearGradient(0, 0, 0, Hc); bg.addColorStop(0, SCR.bg); bg.addColorStop(1, SCR.bg2); g.fillStyle = bg; g.fillRect(0, 0, Wc, Hc);
+    // globe di sepertiga kiri layar, teks di kanan
+    var R = Hc * 0.42, cx = Wc * 0.27, cy = Hc * 0.52, rot = t * 0.22, tilt = 0.38, cr = Math.cos(rot), sr = Math.sin(rot), ct = Math.cos(tilt), st = Math.sin(tilt);
+    function P(v) { var x = v[0] * cr + v[2] * sr, z = -v[0] * sr + v[2] * cr, y = v[1] * ct - z * st, z2 = v[1] * st + z * ct; return [cx + x * R, cy - y * R, z2]; }
+    // piringan bumi + cahaya tepi
+    var sh = g.createRadialGradient(cx - R * 0.35, cy - R * 0.35, R * 0.1, cx, cy, R); sh.addColorStop(0, '#2b4470'); sh.addColorStop(1, SCR.globe);
+    g.fillStyle = sh; g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = SCR.line; g.globalAlpha = 0.6; g.lineWidth = 2; g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.stroke();
+    // garis lintang dan bujur
+    g.globalAlpha = 0.22; g.lineWidth = 1.2;
+    for (var la = -60; la <= 60; la += 30) { g.beginPath(); for (var lo = 0; lo <= 360; lo += 4) { var p = P([Math.cos(la * Math.PI / 180) * Math.cos(lo * Math.PI / 180), Math.sin(la * Math.PI / 180), Math.cos(la * Math.PI / 180) * Math.sin(lo * Math.PI / 180)]); if (p[2] < 0) { g.moveTo(p[0], p[1]); continue; } g.lineTo(p[0], p[1]); } g.stroke(); }
+    for (var lo2 = 0; lo2 < 360; lo2 += 30) { g.beginPath(); for (var la2 = -90; la2 <= 90; la2 += 4) { var p2 = P([Math.cos(la2 * Math.PI / 180) * Math.cos(lo2 * Math.PI / 180), Math.sin(la2 * Math.PI / 180), Math.cos(la2 * Math.PI / 180) * Math.sin(lo2 * Math.PI / 180)]); if (p2[2] < 0) { g.moveTo(p2[0], p2[1]); continue; } g.lineTo(p2[0], p2[1]); } g.stroke(); }
+    g.globalAlpha = 1;
+    // busur antar simpul (diangkat dari permukaan), sisi belakang samar
+    var S = GLOBE.V.map(P); g.lineCap = 'round';
+    function arcPts(a, b) { var A = GLOBE.V[a], B = GLOBE.V[b], out = [], n = 18; for (var i = 0; i <= n; i++) { var u = i / n, lift = 1 + 0.18 * Math.sin(u * Math.PI); var x = A[0] + (B[0] - A[0]) * u, y = A[1] + (B[1] - A[1]) * u, z = A[2] + (B[2] - A[2]) * u, m = Math.sqrt(x * x + y * y + z * z) || 1; out.push(P([x / m * lift, y / m * lift, z / m * lift])); } return out; }
+    var ARC = GLOBE.edges.map(function (e) { return arcPts(e[0], e[1]); });
+    ARC.forEach(function (pts) { g.beginPath(); var vis = 0; pts.forEach(function (p, i) { if (i === 0) g.moveTo(p[0], p[1]); else g.lineTo(p[0], p[1]); vis += p[2]; }); vis /= pts.length; g.strokeStyle = SCR.arc; g.globalAlpha = vis > 0 ? 0.22 + 0.5 * vis : 0.08; g.lineWidth = vis > 0 ? 2.2 : 1.2; g.stroke(); });
+    // denyut yang berjalan di sepanjang busur
+    GLOBE.pulses.forEach(function (pu) { var pts = ARC[pu.e], k = (t * pu.sp + pu.ph) % 1, i = Math.min(pts.length - 1, Math.floor(k * (pts.length - 1))), p = pts[i]; if (p[2] < 0) return; g.globalAlpha = 0.9; g.fillStyle = SCR.text; g.beginPath(); g.arc(p[0], p[1], 5, 0, Math.PI * 2); g.fill(); });
+    // simpul: depan terang dan bernapas, belakang samar
+    S.forEach(function (p, i) { var front = p[2] > 0, rad = i === 0 ? 11 : 6.5, pulse = 1 + 0.18 * Math.sin(t * 2 + i); g.globalAlpha = front ? 1 : 0.14; g.fillStyle = i === 0 ? SCR.home : SCR.node; g.beginPath(); g.arc(p[0], p[1], rad * pulse, 0, Math.PI * 2); g.fill(); if (front) { g.globalAlpha = 0.35; g.beginPath(); g.arc(p[0], p[1], rad * pulse * 2.1, 0, Math.PI * 2); g.fill(); } });
+    // lingkar yang melebar dari Laguboti
+    var h0 = S[0]; if (h0[2] > 0) { g.strokeStyle = SCR.home; g.lineWidth = 3; var w = Math.abs(Math.sin(t * 1.2)); g.globalAlpha = 0.9 - 0.8 * w; g.beginPath(); g.arc(h0[0], h0[1], 16 + 28 * w, 0, Math.PI * 2); g.stroke(); }
+    g.globalAlpha = 1;
+    // teks (ukuran huruf menyusut bila kalimat lebih lebar dari ruang yang tersedia)
+    var tx = Wc * 0.5, maxW = Wc * 0.47;
+    function fit(weight, size, str) { g.font = weight + ' ' + Math.round(size) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; var w = g.measureText(str).width; if (w > maxW) g.font = weight + ' ' + Math.round(size * maxW / w) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; }
+    g.fillStyle = SCR.text; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+    fit('700', Hc * 0.13, 'Satu jejaring, satu panggung'); g.fillText('Satu jejaring, satu panggung', tx, Hc * 0.4);
+    g.fillStyle = SCR.sub;
+    fit('500', Hc * 0.062, 'Alumni Del tersebar di seluruh dunia dan tetap saling terhubung.'); g.fillText('Alumni Del tersebar di seluruh dunia dan tetap saling terhubung.', tx, Hc * 0.54);
+    fit('500', Hc * 0.062, 'Semua bermula dari Laguboti.'); g.fillText('Semua bermula dari Laguboti.', tx, Hc * 0.65);
+    g.font = '600 ' + Math.round(Hc * 0.048) + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+    g.fillStyle = SCR.home; g.beginPath(); g.arc(tx + Hc * 0.03, Hc * 0.78, Hc * 0.022, 0, Math.PI * 2); g.fill(); g.fillStyle = SCR.sub; g.fillText('Laguboti, asal', tx + Hc * 0.08, Hc * 0.795);
+    g.fillStyle = SCR.node; g.beginPath(); g.arc(tx + Hc * 0.6, Hc * 0.78, Hc * 0.018, 0, Math.PI * 2); g.fill(); g.fillStyle = SCR.sub; g.fillText('Kota tempat alumni berada', tx + Hc * 0.65, Hc * 0.795);
     screenTex.needsUpdate = true;
   }
   drawScreen(0);
   if (document.fonts && document.fonts.load) document.fonts.load('700 32px "Plus Jakarta Sans"').then(function () { drawScreen(0); });
   var frameGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-SCREEN_W / 2, SCREEN_Y0, STAGE_Z), new THREE.Vector3(SCREEN_W / 2, SCREEN_Y0, STAGE_Z), new THREE.Vector3(SCREEN_W / 2, SCREEN_Y0 + SCREEN_H, STAGE_Z), new THREE.Vector3(-SCREEN_W / 2, SCREEN_Y0 + SCREEN_H, STAGE_Z), new THREE.Vector3(-SCREEN_W / 2, SCREEN_Y0, STAGE_Z)]);
-  var frame = new THREE.Line(frameGeo, new THREE.LineBasicMaterial({ color: 0xb07416, transparent: true, opacity: 0.45 })); world.add(frame);
+  var frame = new THREE.Line(frameGeo, new THREE.LineBasicMaterial({ color: 0x49566c, transparent: true, opacity: 0.6 })); world.add(frame);
   var floor = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-hallW / 2 - 2, -0.6, STAGE_Z + 6), new THREE.Vector3(hallW / 2 + 2, -0.6, STAGE_Z + 6)]), new THREE.LineBasicMaterial({ color: 0x8c99aa, transparent: true, opacity: 0.5 })); world.add(floor);
 
   var SEATS_PICK = [
@@ -439,7 +497,7 @@
     return [
       [[-ox * 0.6, backY, backZ], [-ox, 1 + oy, STAGE_Z + 10]],
       [[ox * 0.5, NARROW ? 50 : 42, ROWS * ROW_D * 0.6 + 16], [ox, oy * 1.4, ROWS * ROW_D * 0.3]],
-      [[sp.x + (NARROW ? 0 : 4), sp.y + 4.6, sp.z + (NARROW ? 7 : 11)], [sp.x * 0.15 - ox * 1.05, SCREEN_Y0 + SCREEN_H * 0.45 + oy * 0.6, STAGE_Z]],
+      [[sp.x + (NARROW ? 0 : 3), sp.y + 4.6, sp.z + (NARROW ? 14 : 18)], [NARROW ? -SCREEN_W * 0.2 : sp.x * 0.15 - ox * 0.8, SCREEN_Y0 + SCREEN_H * 0.45 + oy * (NARROW ? 1.25 : 0), STAGE_Z]],
       [[ox * 0.5, backY, backZ - 6], [ox * 0.9, 1 + oy, STAGE_Z + 10]],
       [[-ox * 0.9, SCREEN_Y0 + SCREEN_H / 2, STAGE_Z + (NARROW ? 40 : 44)], [-ox * 0.9, SCREEN_Y0 + SCREEN_H / 2 + oy * 0.9, STAGE_Z]]
     ][s];
@@ -523,7 +581,7 @@
     tmpA.set(ca[1][0], ca[1][1], ca[1][2]); tmpB.set(cb[1][0], cb[1][1], cb[1][2]); camTgt.lerpVectors(tmpA, tmpB, t);
     if (!REDUCED) { camPos.x += Math.sin(driftT * 0.25) * 0.4; camPos.y += Math.sin(driftT * 0.33) * 0.2; }
     camera.position.copy(camPos); camera.lookAt(camTgt);
-    var w4 = Math.max(0, 1 - Math.abs(cur - 4)); screen.material.opacity = 0.96 - 0.86 * w4; frame.material.opacity = 0.45 - 0.3 * w4;
+    var w4 = Math.max(0, 1 - Math.abs(cur - 4)); screen.material.opacity = 1 - w4; frame.material.opacity = 0.6 - 0.5 * w4;
     if (!REDUCED && cur < 3.6 && (++frameN % 3 === 0)) drawScreen(driftT);
     var sp = seatOf(SEATS_PICK[selIdx]);
     lblSeat.textContent = SEATS_PICK[selIdx].name + ' · ' + REG_SHORT[SEATS_PICK[selIdx].block];
