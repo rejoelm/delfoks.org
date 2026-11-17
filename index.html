@@ -366,7 +366,6 @@
       for (var y = 0; y < S; y++) for (var x = 0; x < S; x++) if (px[(y * S + x) * 4 + 3] > 120) cand.push([x / S, y / S]);
       seed = 77; for (var i = cand.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var tmp = cand[i]; cand[i] = cand[j]; cand[j] = tmp; }
       logoPts = cand.slice(0, NSEAT); fillLogo();
-      window.__markImg = img; drawScreen(img);
     }; img.src = 'assets/mark.svg';
   })();
 
@@ -381,30 +380,46 @@
   var screenTex = new THREE.CanvasTexture(document.createElement('canvas'));
   var screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W, SCREEN_H), new THREE.MeshBasicMaterial({ map: screenTex, transparent: true, opacity: 0.96 }));
   screen.position.set(0, SCREEN_Y0 + SCREEN_H / 2, STAGE_Z - 0.2); world.add(screen);
-  function drawScreen(markImg) {
-    var cv = screenTex.image, Wc = 2048, Hc = Math.round(2048 * SCREEN_H / SCREEN_W); cv.width = Wc; cv.height = Hc;
-    var g = cv.getContext('2d');
-    var bg = g.createLinearGradient(0, 0, Wc, Hc); bg.addColorStop(0, '#fff8ea'); bg.addColorStop(1, '#f7efe0'); g.fillStyle = bg; g.fillRect(0, 0, Wc, Hc);
-    g.strokeStyle = 'rgba(176,116,22,.35)'; g.lineWidth = 6; g.strokeRect(3, 3, Wc - 6, Hc - 6);
+  var NET = (function () {
     var names = ['Sumut', 'Sumsel–Jabodetabek', 'Bandung', 'Jateng–DIY', 'Jatim–Ind. Timur', 'Luar negeri'];
     var cols = ['#1f7fc4', '#7a3aa3', '#d9822b', '#2a9d7c', '#c43d3d', '#d4a12a'];
-    var cx = Wc * 0.5, hub = [cx, Hc * 0.62], mw = Hc * 0.46;
-    var pts = names.map(function (_, i) { return [Wc * (0.13 + i * 0.148), Hc * 0.8]; });
-    g.lineWidth = 6; g.lineCap = 'round';
-    pts.forEach(function (p, i) { g.strokeStyle = cols[i]; g.globalAlpha = 0.8; g.beginPath(); g.moveTo(p[0], p[1]); g.bezierCurveTo(p[0], Hc * 0.66, hub[0], Hc * 0.78, hub[0], hub[1]); g.stroke(); g.globalAlpha = 1; g.fillStyle = cols[i]; g.beginPath(); g.arc(p[0], p[1], 15, 0, Math.PI * 2); g.fill(); });
-    g.fillStyle = '#fff8ea'; g.beginPath(); g.arc(hub[0], hub[1], mw * 0.42, 0, Math.PI * 2); g.fill();
-    if (markImg) g.drawImage(markImg, hub[0] - mw / 2, hub[1] - mw * 0.55, mw, mw);
-    else { g.fillStyle = '#007cc2'; g.beginPath(); g.arc(hub[0], hub[1], 22, 0, Math.PI * 2); g.fill(); }
-    g.fillStyle = '#16213a'; g.textAlign = 'center'; g.font = '700 ' + Math.round(Hc * 0.125) + 'px "Plus Jakarta Sans", system-ui, sans-serif';
-    g.fillText('Satu panggung untuk semua alumni Del', cx, Hc * 0.19);
-    g.font = '500 ' + Math.round(Hc * 0.06) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; g.fillStyle = '#3c4a63';
-    g.fillText('Dari enam regional, satu Del Folks.', cx, Hc * 0.3);
-    g.font = '600 ' + Math.round(Hc * 0.052) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; g.fillStyle = '#16213a';
-    pts.forEach(function (p, i) { g.fillText(names[i], p[0], p[1] + Hc * 0.1); });
+    var hubs = [[0.1, 0.58], [0.3, 0.7], [0.43, 0.78], [0.56, 0.78], [0.73, 0.64], [0.88, 0.4]];
+    var home = [0.19, 0.4]; // Laguboti, tempat semua berasal
+    var r = 11; function rr() { r = (r * 16807) % 2147483647; return (r - 1) / 2147483646; }
+    var alumni = []; hubs.forEach(function (h, i) { var n = 12 + Math.floor(rr() * 8); for (var k = 0; k < n; k++) { var a = rr() * Math.PI * 2, d = 0.035 + rr() * 0.06; alumni.push([h[0] + Math.cos(a) * d * 0.5, h[1] + Math.sin(a) * d * 2, i]); } });
+    var edges = []; for (var i = 0; i < 6; i++) { edges.push([home, hubs[i], 2.5, 0.55]); for (var j = i + 1; j < 6; j++) edges.push([hubs[i], hubs[j], 1.2, 0.22]); }
+    return { names: names, cols: cols, hubs: hubs, home: home, alumni: alumni, edges: edges };
+  })();
+  function drawScreen(t) {
+    var cv = screenTex.image, Wc = 2048, Hc = Math.round(2048 * SCREEN_H / SCREEN_W); if (cv.width !== Wc) { cv.width = Wc; cv.height = Hc; }
+    var g = cv.getContext('2d'), X = function (p) { return p[0] * Wc; }, Y = function (p) { return p[1] * Hc; };
+    var bg = g.createLinearGradient(0, 0, Wc, Hc); bg.addColorStop(0, '#fff8ea'); bg.addColorStop(1, '#f7efe0'); g.fillStyle = bg; g.fillRect(0, 0, Wc, Hc);
+    g.strokeStyle = 'rgba(176,116,22,.35)'; g.lineWidth = 6; g.strokeRect(3, 3, Wc - 6, Hc - 6);
+    // jejaring antar regional (tipis) dan ke Laguboti (tebal)
+    g.lineCap = 'round';
+    NET.edges.forEach(function (e) { g.strokeStyle = 'rgba(22,33,58,' + e[3] + ')'; g.lineWidth = e[2]; g.beginPath(); g.moveTo(X(e[0]), Y(e[0])); g.lineTo(X(e[1]), Y(e[1])); g.stroke(); });
+    // denyut yang berjalan dari Laguboti ke tiap regional dan kembali
+    NET.hubs.forEach(function (h, i) { var ph = (t * 0.18 + i * 0.17) % 1, k = ph < 0.5 ? ph * 2 : 2 - ph * 2; var x = X(NET.home) + (X(h) - X(NET.home)) * k, y = Y(NET.home) + (Y(h) - Y(NET.home)) * k; g.fillStyle = NET.cols[i]; g.beginPath(); g.arc(x, y, 7, 0, Math.PI * 2); g.fill(); });
+    // alumni di sekitar tiap regional
+    NET.alumni.forEach(function (a, k) { var h = NET.hubs[a[2]]; g.strokeStyle = NET.cols[a[2]]; g.globalAlpha = 0.35; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X(h), Y(h)); g.lineTo(X(a), Y(a)); g.stroke(); g.globalAlpha = 1; g.fillStyle = NET.cols[a[2]]; var pulse = 1 + 0.25 * Math.sin(t * 2 + k); g.beginPath(); g.arc(X(a), Y(a), 5 * pulse, 0, Math.PI * 2); g.fill(); });
+    // simpul regional
+    NET.hubs.forEach(function (h, i) { g.fillStyle = '#fff8ea'; g.beginPath(); g.arc(X(h), Y(h), 22, 0, Math.PI * 2); g.fill(); g.fillStyle = NET.cols[i]; g.beginPath(); g.arc(X(h), Y(h), 16, 0, Math.PI * 2); g.fill(); });
+    // Laguboti
+    g.fillStyle = '#fff8ea'; g.beginPath(); g.arc(X(NET.home), Y(NET.home), 30, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#16213a'; g.beginPath(); g.arc(X(NET.home), Y(NET.home), 20, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = '#16213a'; g.lineWidth = 3; g.globalAlpha = 0.5 + 0.5 * Math.abs(Math.sin(t * 1.3)); g.beginPath(); g.arc(X(NET.home), Y(NET.home), 34 + 10 * Math.abs(Math.sin(t * 1.3)), 0, Math.PI * 2); g.stroke(); g.globalAlpha = 1;
+    // teks
+    g.fillStyle = '#16213a'; g.textAlign = 'center'; g.font = '700 ' + Math.round(Hc * 0.12) + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+    g.fillText('Satu jejaring, enam regional, satu panggung', Wc * 0.5, Hc * 0.17);
+    g.font = '500 ' + Math.round(Hc * 0.058) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; g.fillStyle = '#3c4a63';
+    g.fillText('Dari Laguboti ke mana pun kita pergi, alumni Del tetap satu ikatan.', Wc * 0.5, Hc * 0.28);
+    g.font = '600 ' + Math.round(Hc * 0.05) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; g.fillStyle = '#16213a';
+    NET.hubs.forEach(function (h, i) { var dy = (i === 2 || i === 3) ? Hc * 0.1 : (i === 5 ? -Hc * 0.06 : Hc * 0.1); g.fillText(NET.names[i], X(h), Y(h) + dy); });
+    g.textAlign = 'left'; g.fillText('Laguboti', X(NET.home) + 36, Y(NET.home) - 14);
     screenTex.needsUpdate = true;
   }
-  drawScreen(null);
-  if (document.fonts && document.fonts.load) document.fonts.load('700 32px "Plus Jakarta Sans"').then(function () { drawScreen(window.__markImg || null); });
+  drawScreen(0);
+  if (document.fonts && document.fonts.load) document.fonts.load('700 32px "Plus Jakarta Sans"').then(function () { drawScreen(0); });
   var frameGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-SCREEN_W / 2, SCREEN_Y0, STAGE_Z), new THREE.Vector3(SCREEN_W / 2, SCREEN_Y0, STAGE_Z), new THREE.Vector3(SCREEN_W / 2, SCREEN_Y0 + SCREEN_H, STAGE_Z), new THREE.Vector3(-SCREEN_W / 2, SCREEN_Y0 + SCREEN_H, STAGE_Z), new THREE.Vector3(-SCREEN_W / 2, SCREEN_Y0, STAGE_Z)]);
   var frame = new THREE.Line(frameGeo, new THREE.LineBasicMaterial({ color: 0xb07416, transparent: true, opacity: 0.45 })); world.add(frame);
   var floor = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-hallW / 2 - 2, -0.6, STAGE_Z + 6), new THREE.Vector3(hallW / 2 + 2, -0.6, STAGE_Z + 6)]), new THREE.LineBasicMaterial({ color: 0x8c99aa, transparent: true, opacity: 0.5 })); world.add(floor);
@@ -424,7 +439,7 @@
     return [
       [[-ox * 0.6, backY, backZ], [-ox, 1 + oy, STAGE_Z + 10]],
       [[ox * 0.5, NARROW ? 50 : 42, ROWS * ROW_D * 0.6 + 16], [ox, oy * 1.4, ROWS * ROW_D * 0.3]],
-      [[sp.x + (NARROW ? 0 : 3), sp.y + 4.2, sp.z + 6.5], [sp.x * 0.2 - ox * 0.85, SCREEN_Y0 + SCREEN_H * 0.45 + oy * 0.6, STAGE_Z]],
+      [[sp.x + (NARROW ? 0 : 4), sp.y + 4.6, sp.z + (NARROW ? 7 : 11)], [sp.x * 0.15 - ox * 1.05, SCREEN_Y0 + SCREEN_H * 0.45 + oy * 0.6, STAGE_Z]],
       [[ox * 0.5, backY, backZ - 6], [ox * 0.9, 1 + oy, STAGE_Z + 10]],
       [[-ox * 0.9, SCREEN_Y0 + SCREEN_H / 2, STAGE_Z + (NARROW ? 40 : 44)], [-ox * 0.9, SCREEN_Y0 + SCREEN_H / 2 + oy * 0.9, STAGE_Z]]
     ][s];
@@ -485,7 +500,7 @@
   window.addEventListener('scroll', function () { target = stageFromScroll(); }, { passive: true }); target = stageFromScroll(); cur = target;
   var dock = document.querySelectorAll('.dock a');
 
-  var last = performance.now();
+  var last = performance.now(), frameN = 0;
   function frame_(now) {
     var dt = Math.min(0.05, (now - last) / 1000); last = now;
     cur += (target - cur) * (REDUCED ? 1 : 0.08);
@@ -509,6 +524,7 @@
     if (!REDUCED) { camPos.x += Math.sin(driftT * 0.25) * 0.4; camPos.y += Math.sin(driftT * 0.33) * 0.2; }
     camera.position.copy(camPos); camera.lookAt(camTgt);
     var w4 = Math.max(0, 1 - Math.abs(cur - 4)); screen.material.opacity = 0.96 - 0.86 * w4; frame.material.opacity = 0.45 - 0.3 * w4;
+    if (!REDUCED && cur < 3.6 && (++frameN % 3 === 0)) drawScreen(driftT);
     var sp = seatOf(SEATS_PICK[selIdx]);
     lblSeat.textContent = SEATS_PICK[selIdx].name + ' · ' + REG_SHORT[SEATS_PICK[selIdx].block];
     placeLabel(lblSeat, sp.x, sp.y + 0.6, sp.z, cur > 0.6 && cur < 1.6, -8);
