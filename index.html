@@ -167,9 +167,9 @@
         <h2>Setiap alumni punya kursi.</h2>
         <p class="lead">Baris menunjukkan angkatan, blok menunjukkan regional. Tidak ada kursi yang lebih penting dari kursi lain. Yang ada hanya pandangan yang berbeda ke panggung yang sama.</p>
         <div class="legend">
-          <span><i style="background:#3d8ac9"></i>Baris depan: angkatan awal</span>
-          <span><i style="background:#9fb6cf"></i>Baris belakang: tiga angkatan terakhir</span>
-          <span><i style="background:var(--ungu)"></i>Kursi yang sedang dipilih</span>
+          <span><i style="background:linear-gradient(90deg,#1f7fc4,#7a3aa3,#d9822b,#2a9d7c,#c43d3d,#d4a12a);border-radius:3px;width:28px"></i>Satu warna per blok regional</span>
+          <span><i style="background:#1f7fc4"></i>Pekat: angkatan awal &nbsp;<i style="background:#9ac3e3"></i>Muda: angkatan terakhir</span>
+          <span><i style="background:var(--ungu);outline:2px solid #fff;outline-offset:1px"></i>Kursi yang sedang dipilih</span>
         </div>
         <p class="note">Enam blok dari kiri ke kanan: Sumut, Sumsel–Jabodetabek, Bandung, Jateng–DIY, Jatim–Indonesia Timur, luar negeri.</p>
       </div>
@@ -318,7 +318,10 @@
   function put(s, i, x, y, z, c, size) { P[s][i * 3] = x; P[s][i * 3 + 1] = y; P[s][i * 3 + 2] = z; C[s][i * 3] = c[0]; C[s][i * 3 + 1] = c[1]; C[s][i * 3 + 2] = c[2]; SZ[s][i] = size; }
   function hex(h) { return [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255]; }
   function mix(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
-  var COL = { seat: hex('#b7c6d8'), front: hex('#3d8ac9'), back: hex('#9fb6cf'), lit: hex('#007cc2'), sel: hex('#6c2993'), dust: hex('#d3dce6'), biru: hex('#007cc2'), ungu: hex('#6c2993') };
+  var COL = { seat: hex('#b7c6d8'), front: hex('#3d8ac9'), back: hex('#9fb6cf'), lit: hex('#007cc2'), sel: hex('#6c2993'), dust: hex('#d3dce6'), biru: hex('#007cc2'), ungu: hex('#6c2993'), paper: hex('#f4f6f9') };
+  // keanekaragaman: satu rumpun warna per blok regional, dipakai juga sebagai palet acak di aula
+  var PAL = ['#1f7fc4', '#7a3aa3', '#d9822b', '#2a9d7c', '#c43d3d', '#d4a12a'].map(hex);
+  var PAL_LIGHT = PAL.map(function (c) { return mix(c, COL.paper, 0.45); });
 
   var seatPos = [];
   var SEAT_W = NARROW ? 1.15 : 1.0, ROW_D = 1.7, RAKE = 0.36, AISLE = NARROW ? 1.4 : 1.6;
@@ -334,10 +337,12 @@
     seed = 1234;
     for (var d = 0; d < NDUST; d++) put(s, NSEAT + d, (rnd() - .5) * hallW * 1.6, rnd() * 26 - 2, STAGE_Z - 6 + rnd() * 60, COL.dust, 0.7 + rnd() * 0.9);
   }
-  fillHall(0, function () { return COL.seat; }, 2.2);
-  fillHall(1, function (sp) { var k = 0.9 + 0.1 * (sp.block % 2); var c = rowColor(sp); return [c[0] * k, c[1] * k, c[2] * k]; }, 2.3);
-  fillHall(2, function (sp) { return rowColor(sp); }, 2.3);
-  fillHall(3, function () { return COL.seat; }, 2.0);
+  seed = 31;
+  fillHall(0, function (sp) { var c = PAL[Math.floor(rnd() * PAL.length)]; return mix(c, COL.paper, 0.1 + rnd() * 0.3); }, 2.2);
+  function blockRow(sp) { return mix(PAL[sp.block], PAL_LIGHT[sp.block], sp.row / (ROWS - 1)); }
+  fillHall(1, blockRow, 2.3);
+  fillHall(2, blockRow, 2.3);
+  fillHall(3, function (sp) { return mix(blockRow(sp), COL.paper, 0.55); }, 2.0);
 
   var logoPts = [];
   function fillLogo() {
@@ -361,6 +366,7 @@
       for (var y = 0; y < S; y++) for (var x = 0; x < S; x++) if (px[(y * S + x) * 4 + 3] > 120) cand.push([x / S, y / S]);
       seed = 77; for (var i = cand.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var tmp = cand[i]; cand[i] = cand[j]; cand[j] = tmp; }
       logoPts = cand.slice(0, NSEAT); fillLogo();
+      window.__markImg = img; drawScreen(img);
     }; img.src = 'assets/mark.svg';
   })();
 
@@ -372,8 +378,33 @@
   });
   world.add(new THREE.Points(geo, mat));
   // stage: a soft warm panel with a frame, and a floor line
-  var screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W, SCREEN_H), new THREE.MeshBasicMaterial({ color: 0xfff4dd, transparent: true, opacity: 0.9 }));
+  var screenTex = new THREE.CanvasTexture(document.createElement('canvas'));
+  var screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W, SCREEN_H), new THREE.MeshBasicMaterial({ map: screenTex, transparent: true, opacity: 0.96 }));
   screen.position.set(0, SCREEN_Y0 + SCREEN_H / 2, STAGE_Z - 0.2); world.add(screen);
+  function drawScreen(markImg) {
+    var cv = screenTex.image, Wc = 2048, Hc = Math.round(2048 * SCREEN_H / SCREEN_W); cv.width = Wc; cv.height = Hc;
+    var g = cv.getContext('2d');
+    var bg = g.createLinearGradient(0, 0, Wc, Hc); bg.addColorStop(0, '#fff8ea'); bg.addColorStop(1, '#f7efe0'); g.fillStyle = bg; g.fillRect(0, 0, Wc, Hc);
+    g.strokeStyle = 'rgba(176,116,22,.35)'; g.lineWidth = 6; g.strokeRect(3, 3, Wc - 6, Hc - 6);
+    var names = ['Sumut', 'Sumsel–Jabodetabek', 'Bandung', 'Jateng–DIY', 'Jatim–Ind. Timur', 'Luar negeri'];
+    var cols = ['#1f7fc4', '#7a3aa3', '#d9822b', '#2a9d7c', '#c43d3d', '#d4a12a'];
+    var cx = Wc * 0.5, hub = [cx, Hc * 0.62], mw = Hc * 0.46;
+    var pts = names.map(function (_, i) { return [Wc * (0.13 + i * 0.148), Hc * 0.8]; });
+    g.lineWidth = 6; g.lineCap = 'round';
+    pts.forEach(function (p, i) { g.strokeStyle = cols[i]; g.globalAlpha = 0.8; g.beginPath(); g.moveTo(p[0], p[1]); g.bezierCurveTo(p[0], Hc * 0.66, hub[0], Hc * 0.78, hub[0], hub[1]); g.stroke(); g.globalAlpha = 1; g.fillStyle = cols[i]; g.beginPath(); g.arc(p[0], p[1], 15, 0, Math.PI * 2); g.fill(); });
+    g.fillStyle = '#fff8ea'; g.beginPath(); g.arc(hub[0], hub[1], mw * 0.42, 0, Math.PI * 2); g.fill();
+    if (markImg) g.drawImage(markImg, hub[0] - mw / 2, hub[1] - mw * 0.55, mw, mw);
+    else { g.fillStyle = '#007cc2'; g.beginPath(); g.arc(hub[0], hub[1], 22, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#16213a'; g.textAlign = 'center'; g.font = '700 ' + Math.round(Hc * 0.125) + 'px "Plus Jakarta Sans", system-ui, sans-serif';
+    g.fillText('Satu panggung untuk semua alumni Del', cx, Hc * 0.19);
+    g.font = '500 ' + Math.round(Hc * 0.06) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; g.fillStyle = '#3c4a63';
+    g.fillText('Dari enam regional, satu Del Folks.', cx, Hc * 0.3);
+    g.font = '600 ' + Math.round(Hc * 0.052) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; g.fillStyle = '#16213a';
+    pts.forEach(function (p, i) { g.fillText(names[i], p[0], p[1] + Hc * 0.1); });
+    screenTex.needsUpdate = true;
+  }
+  drawScreen(null);
+  if (document.fonts && document.fonts.load) document.fonts.load('700 32px "Plus Jakarta Sans"').then(function () { drawScreen(window.__markImg || null); });
   var frameGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-SCREEN_W / 2, SCREEN_Y0, STAGE_Z), new THREE.Vector3(SCREEN_W / 2, SCREEN_Y0, STAGE_Z), new THREE.Vector3(SCREEN_W / 2, SCREEN_Y0 + SCREEN_H, STAGE_Z), new THREE.Vector3(-SCREEN_W / 2, SCREEN_Y0 + SCREEN_H, STAGE_Z), new THREE.Vector3(-SCREEN_W / 2, SCREEN_Y0, STAGE_Z)]);
   var frame = new THREE.Line(frameGeo, new THREE.LineBasicMaterial({ color: 0xb07416, transparent: true, opacity: 0.45 })); world.add(frame);
   var floor = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-hallW / 2 - 2, -0.6, STAGE_Z + 6), new THREE.Vector3(hallW / 2 + 2, -0.6, STAGE_Z + 6)]), new THREE.LineBasicMaterial({ color: 0x8c99aa, transparent: true, opacity: 0.5 })); world.add(floor);
@@ -393,7 +424,7 @@
     return [
       [[-ox * 0.6, backY, backZ], [-ox, 1 + oy, STAGE_Z + 10]],
       [[ox * 0.5, NARROW ? 50 : 42, ROWS * ROW_D * 0.6 + 16], [ox, oy * 1.4, ROWS * ROW_D * 0.3]],
-      [[sp.x + (NARROW ? 0 : 3), sp.y + 4.2, sp.z + 6.5], [sp.x * 0.35 - ox * 0.45, SCREEN_Y0 + SCREEN_H * 0.45 + oy * 0.6, STAGE_Z]],
+      [[sp.x + (NARROW ? 0 : 3), sp.y + 4.2, sp.z + 6.5], [sp.x * 0.2 - ox * 0.85, SCREEN_Y0 + SCREEN_H * 0.45 + oy * 0.6, STAGE_Z]],
       [[ox * 0.5, backY, backZ - 6], [ox * 0.9, 1 + oy, STAGE_Z + 10]],
       [[-ox * 0.9, SCREEN_Y0 + SCREEN_H / 2, STAGE_Z + (NARROW ? 40 : 44)], [-ox * 0.9, SCREEN_Y0 + SCREEN_H / 2 + oy * 0.9, STAGE_Z]]
     ][s];
@@ -418,7 +449,7 @@
 
   var litSeats = [];
   function setData(v) {
-    for (var i = 0; i < NSEAT; i++) { C[3][i * 3] = COL.seat[0]; C[3][i * 3 + 1] = COL.seat[1]; C[3][i * 3 + 2] = COL.seat[2]; SZ[3][i] = 2.0; }
+    for (var i = 0; i < NSEAT; i++) { var pc = mix(blockRow(seatPos[i]), COL.paper, 0.55); C[3][i * 3] = pc[0]; C[3][i * 3 + 1] = pc[1]; C[3][i * 3 + 2] = pc[2]; SZ[3][i] = 2.0; }
     litSeats = []; var used = {}; seed = 2024;
     v.dok.forEach(function (d) {
       var b = REG.indexOf(d.regional); if (b < 0) b = Math.floor(rnd() * 6);
@@ -477,7 +508,7 @@
     tmpA.set(ca[1][0], ca[1][1], ca[1][2]); tmpB.set(cb[1][0], cb[1][1], cb[1][2]); camTgt.lerpVectors(tmpA, tmpB, t);
     if (!REDUCED) { camPos.x += Math.sin(driftT * 0.25) * 0.4; camPos.y += Math.sin(driftT * 0.33) * 0.2; }
     camera.position.copy(camPos); camera.lookAt(camTgt);
-    var w4 = Math.max(0, 1 - Math.abs(cur - 4)); screen.material.opacity = 0.9 - 0.75 * w4; frame.material.opacity = 0.45 - 0.3 * w4;
+    var w4 = Math.max(0, 1 - Math.abs(cur - 4)); screen.material.opacity = 0.96 - 0.86 * w4; frame.material.opacity = 0.45 - 0.3 * w4;
     var sp = seatOf(SEATS_PICK[selIdx]);
     lblSeat.textContent = SEATS_PICK[selIdx].name + ' · ' + REG_SHORT[SEATS_PICK[selIdx].block];
     placeLabel(lblSeat, sp.x, sp.y + 0.6, sp.z, cur > 0.6 && cur < 1.6, -8);
