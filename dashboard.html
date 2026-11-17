@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Studi — Del Folks</title>
+<meta name="description" content="Progres Studi Alumni SMA Unggul Del untuk pembentukan Del Folks. Semua data anonim.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="in">
+  <a class="brand" href="index.html" aria-label="Del Folks, beranda">
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="7" fill="#1b5e7b"/><path d="M7 20c3-5 6-5 9 0s6 5 9 0" stroke="#f6f3ec" stroke-width="2.2" stroke-linecap="round"/><path d="M7 14c3-5 6-5 9 0s6 5 9 0" stroke="#f6f3ec" stroke-width="2.2" stroke-linecap="round" opacity=".55"/></svg>
+    Del Folks
+  </a>
+  <nav class="nav" aria-label="Utama">
+    <a href="index.html">Beranda</a>
+    <a href="studi.html">Studi</a>
+    <a href="dashboard.html" aria-current="page">Dashboard</a>
+  </nav>
+</div></header>
+
+<main>
+  <div class="dash-head">
+    <div>
+      <h1>Progres Studi Alumni</h1>
+      <p class="muted" style="margin:4px 0 0">Suara alumni SMA Unggul Del yang sudah terkumpul untuk merancang Del Folks. Tidak ada nama di halaman ini.</p>
+    </div>
+    <div class="status" id="status" aria-live="polite"><span class="dot warn"></span>Memuat…</div>
+  </div>
+
+  <div id="alert" class="alert" hidden></div>
+
+  <form class="filters" onsubmit="return false" aria-label="Filter">
+    <div class="f"><label for="f-jenis">Jenis</label><select id="f-jenis"></select></div>
+    <div class="f"><label for="f-regional">Regional</label><select id="f-regional"></select></div>
+    <div class="f"><label for="f-lvl">Keterlibatan</label><select id="f-lvl"></select></div>
+    <div class="f"><label for="f-rq">RQ</label><select id="f-rq"></select></div>
+    <button type="button" class="reset" id="f-reset" hidden>Hapus filter</button>
+  </form>
+  <p class="scope" id="scope"></p>
+
+  <div id="app" aria-live="polite">
+    <section class="kpis" aria-hidden="true">
+      <div class="kpi"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:40%;height:30px;margin:8px 0"></div><div class="skeleton" style="width:70%"></div></div>
+      <div class="kpi"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:40%;height:30px;margin:8px 0"></div><div class="skeleton" style="width:70%"></div></div>
+      <div class="kpi"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:40%;height:30px;margin:8px 0"></div><div class="skeleton" style="width:70%"></div></div>
+      <div class="kpi"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:40%;height:30px;margin:8px 0"></div><div class="skeleton" style="width:70%"></div></div>
+    </section>
+  </div>
+</main>
+
+<footer><div class="in">
+  <span>Del Folks · Alumni SMA Unggul Del</span>
+  <span>Data diproses otomatis dari lembar temuan; identitas disimpan terpisah oleh data steward.</span>
+  <a href="studi.html#ikut">Ingin ikut bersuara?</a>
+</div></footer>
+
+<script src="assets/config.js"></script>
+<script src="assets/dashboard.js"></script>
+</body>
+</html>

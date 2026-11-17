@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><?= judul ?></title>
+<style>
+  :root{--ink:#1b2430;--muted:#5f6b7a;--line:#e3e8ef;--bg:#f6f8fb;--card:#fff;--navy:#1a3d6d;--teal:#1f8a70;--amber:#d98e04;--red:#c23b3b}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  header{background:var(--navy);color:#fff;padding:22px 28px}
+  header h1{margin:0;font-size:22px;font-weight:600}
+  header p{margin:6px 0 0;opacity:.85;font-size:13px}
+  main{max-width:1180px;margin:0 auto;padding:22px}
+  .grid{display:grid;gap:16px}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .card h2{margin:0 0 10px;font-size:14px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+  .big{font-size:34px;font-weight:700;color:var(--navy)}
+  .sub{color:var(--muted);font-size:12px;margin-top:2px}
+  .bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px}
+  .bar .lbl{width:150px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar .trk{flex:1;background:#eef1f6;border-radius:6px;height:14px;overflow:hidden}
+  .bar .fil{height:100%;background:var(--teal);border-radius:6px}
+  .bar .fil.amb{background:var(--amber)}
+  .bar .fil.navy{background:var(--navy)}
+  .bar .val{width:70px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase}
+  .heat td.c{text-align:center;font-variant-numeric:tabular-nums}
+  .tag{display:inline-block;padding:2px 7px;border-radius:999px;font-size:11px;background:#eef3fa;color:var(--navy);margin-right:4px}
+  .quote{border-left:3px solid var(--teal);padding:8px 12px;margin:10px 0;background:#fbfcfd;border-radius:0 8px 8px 0}
+  .quote .meta{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .quote .k{font-style:italic}
+  .quote .m{font-size:12.5px;color:var(--ink);margin-top:4px}
+  .pill{display:inline-block;background:#fff3dc;color:#7a4e00;padding:2px 8px;border-radius:999px;font-size:11px}
+  .chip{display:inline-block;background:#eef1f6;border-radius:8px;padding:6px 10px;margin:4px 4px 0 0;font-size:12.5px}
+  .foot{color:var(--muted);font-size:12px;text-align:center;padding:18px}
+  .loading{padding:40px;text-align:center;color:var(--muted)}
+  @media (max-width:640px){.bar .lbl{width:100px}header{padding:16px}}
+</style>
+</head>
+<body>
+<header>
+  <h1><?= judul ?></h1>
+  <p>Semua data anonim. Identitas peserta tidak pernah masuk ke halaman ini. Hasil lengkap dibagikan terbuka pada <b><?= tanggalPublikasi ?></b>.</p>
+</header>
+<main id="app"><div class="loading">Memuat data…</div></main>
+<div class="foot" id="foot"></div>
+
+<script>
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function bars(obj, opts){
+  opts=opts||{};var keys=Object.keys(obj);if(!keys.length)return '<div class="sub">Belum ada data.</div>';
+  var max=Math.max.apply(null,keys.map(function(k){return opts.target?Math.max(obj[k],opts.target[k]||0):obj[k]}))||1;
+  keys.sort(function(a,b){return obj[b]-obj[a]});
+  return keys.map(function(k){
+    var v=obj[k],t=opts.target?opts.target[k]:null,pct=Math.round(100*v/max);
+    var cls=t?(v>=t?'':'amb'):(opts.cls||'');
+    var val=t?(v+' / '+t):v;
+    return '<div class="bar"><div class="lbl" title="'+esc(k)+'">'+esc(k)+'</div><div class="trk"><div class="fil '+cls+'" style="width:'+pct+'%"></div></div><div class="val">'+esc(val)+'</div></div>';
+  }).join('');
+}
+function heat(perKelompok){
+  var regs={},lv={};Object.keys(perKelompok).forEach(function(k){var p=k.split('|');regs[p[0]]=1;lv[p[1]]=1});
+  var R=Object.keys(regs).sort(),L=['aktif','pernah aktif','pasif'].filter(function(x){return lv[x]}).concat(Object.keys(lv).filter(function(x){return ['aktif','pernah aktif','pasif'].indexOf(x)<0}));
+  if(!R.length)return '<div class="sub">Belum ada data.</div>';
+  var max=Math.max.apply(null,Object.keys(perKelompok).map(function(k){return perKelompok[k]}))||1;
+  var h='<table class="heat"><tr><th>Regional</th>'+L.map(function(l){return '<th>'+esc(l)+'</th>'}).join('')+'<th>Total</th></tr>';
+  R.forEach(function(r){var tot=0;h+='<tr><td>'+esc(r)+'</td>';L.forEach(function(l){var v=perKelompok[r+'|'+l]||0;tot+=v;var a=v?0.15+0.6*v/max:0;h+='<td class="c" style="background:rgba(31,138,112,'+a+')">'+(v||'·')+'</td>'});h+='<td class="c"><b>'+tot+'</b></td></tr>'});
+  return h+'</table><div class="sub">Sel yang masih kosong (·) adalah kelompok yang belum terwakili — prioritas ajakan berikutnya.</div>';
+}
+function weekly(perMinggu){
+  var ws=Object.keys(perMinggu).map(Number).sort(function(a,b){return a-b});if(!ws.length)return '<div class="sub">Belum ada data.</div>';
+  var maxW=ws[ws.length-1],obj={};for(var w=1;w<=maxW;w++)obj['Minggu '+w]=perMinggu[w]||0;
+  var max=Math.max.apply(null,Object.keys(obj).map(function(k){return obj[k]}))||1;
+  return Object.keys(obj).map(function(k){var v=obj[k];return '<div class="bar"><div class="lbl">'+k+'</div><div class="trk"><div class="fil navy" style="width:'+Math.round(100*v/max)+'%"></div></div><div class="val">'+v+'</div></div>'}).join('');
+}
+function render(d){
+  var app=document.getElementById('app');
+  var html='';
+  html+='<div class="grid g4">'+
+    '<div class="card"><h2>Lembar temuan masuk</h2><div class="big">'+d.totalDokumen+'</div><div class="sub">wawancara, Del Talks, FGD, voice note</div></div>'+
+    '<div class="card"><h2>Suara alumni</h2><div class="big">'+d.totalSuara+'</div><div class="sub">Del Talks dihitung 2 suara</div></div>'+
+    '<div class="card"><h2>Temuan terkode</h2><div class="big">'+d.totalTemuan+'</div><div class="sub">baris tema + kutipan + makna</div></div>'+
+    '<div class="card"><h2>Regional terwakili</h2><div class="big">'+Object.keys(d.perRegional).length+' / 6</div><div class="sub">'+esc(Object.keys(d.perRegional).join(', ')||'—')+'</div></div>'+
+  '</div><div style="height:16px"></div>';
+  html+='<div class="grid g2">'+
+    '<div class="card"><h2>Progres vs target per jenis</h2>'+bars(d.perJenis,{target:d.target})+'<div class="sub">Hijau = target tercapai, kuning = belum.</div></div>'+
+    '<div class="card"><h2>Lembar masuk per minggu</h2>'+weekly(d.perMinggu)+'</div>'+
+    '<div class="card"><h2>Cakupan: regional × keterlibatan</h2>'+heat(d.perKelompok)+'</div>'+
+    '<div class="card"><h2>Temuan per pertanyaan penelitian</h2>'+bars(d.perRQ,{cls:'navy'})+'<div class="sub">RQ1 makna · RQ2 hambatan · RQ3 program · RQ4 struktur &amp; iuran · RQ5 kepercayaan · RQ6 kesediaan</div></div>'+
+    '<div class="card"><h2>Temuan per kode induk</h2>'+bars(d.perKode)+'</div>'+
+    '<div class="card"><h2>Tema yang paling sering muncul</h2>'+(d.topTema.length?d.topTema.map(function(t){return '<span class="chip">'+esc(t[0])+' <b>'+t[1]+'</b></span>'}).join(''):'<div class="sub">Belum ada data.</div>')+'</div>'+
+    '<div class="card"><h2>Penilaian struktur AD/ART</h2>'+bars(d.struktur)+'</div>'+
+    '<div class="card"><h2>Sikap terhadap iuran</h2>'+bars(d.iuran)+'</div>'+
+    '<div class="card"><h2>Kesediaan berperan</h2>'+bars(d.kesediaan)+'</div>'+
+    '<div class="card"><h2>Perasaan dominan percakapan</h2>'+bars(d.perasaan,{cls:'amb'})+'</div>'+
+  '</div><div style="height:16px"></div>';
+  html+='<div class="grid g2">'+
+    '<div class="card"><h2>"Satu hal yang harus diubah" (terbaru)</h2>'+(d.harusDiubah.length?'<ul style="margin:0;padding-left:18px;font-size:13px">'+d.harusDiubah.map(function(x){return '<li style="margin:4px 0">'+esc(x)+'</li>'}).join('')+'</ul>':'<div class="sub">Belum ada data.</div>')+'</div>'+
+    '<div class="card"><h2>Temuan terbaru (anonim)</h2>'+(d.terbaru.length?d.terbaru.map(function(t){
+      return '<div class="quote"><div class="meta"><span class="tag">'+esc(t.rq)+'</span><span class="tag">'+esc(t.kode)+'</span>'+esc(t.jenis)+' · angkatan '+esc(t.angkatan)+' · '+esc(t.regional)+' · '+esc(t.keterlibatan)+'</div><div><b>'+esc(t.tema)+'</b></div>'+(t.kutipan?'<div class="k">“'+esc(t.kutipan)+'”</div>':'')+(t.makna?'<div class="m">'+esc(t.makna)+'</div>':'')+'</div>'}).join(''):'<div class="sub">Belum ada data.</div>')+'</div>'+
+  '</div>';
+  app.innerHTML=html;
+  document.getElementById('foot').textContent='Diperbarui '+new Date(d.diperbarui).toLocaleString('id-ID')+' · data diproses otomatis dari lembar temuan; identitas disimpan terpisah oleh data steward.';
+}
+function fail(e){document.getElementById('app').innerHTML='<div class="card">Gagal memuat: '+esc(e&&e.message||e)+'</div>'}
+if(typeof google!=='undefined'&&google.script){google.script.run.withSuccessHandler(render).withFailureHandler(fail).getDashboardData();}
+else if(window.MOCK){render(window.MOCK);}
+</script>
+</body>
+</html>
