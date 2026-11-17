@@ -29,7 +29,7 @@
     <div class="status" id="status" aria-live="polite"><span class="dot warn"></span>Memuat…</div>
   </div>
 
-  <div id="alert" class="alert" hidden></div>
+  <div id="alert" class="alert" role="status" hidden></div>
 
   <form class="filters" onsubmit="return false" aria-label="Filter">
     <div class="f"><label for="f-jenis">Jenis</label><select id="f-jenis"></select></div>
@@ -40,7 +40,7 @@
   </form>
   <p class="scope" id="scope"></p>
 
-  <div id="app" aria-live="polite">
+  <div id="app">
     <section class="kpis" aria-hidden="true">
       <div class="kpi"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:40%;height:30px;margin:8px 0"></div><div class="skeleton" style="width:70%"></div></div>
       <div class="kpi"><div class="skeleton" style="width:60%"></div><div class="skeleton" style="width:40%;height:30px;margin:8px 0"></div><div class="skeleton" style="width:70%"></div></div>

@@ -129,12 +129,12 @@
     html += panel('span-5 enter', 'Progres menuju target', 'per jenis kegiatan', rowsTarget(perJenis, target), 'Garis tegak = target. Target diatur di tab Config.');
     // weekly
     var mulaiTxt = cfg.tanggalMulai ? new Date(cfg.tanggalMulai).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
-    html += panel('span-7 enter', 'Lembar masuk per minggu', 'sejak minggu ke-1 studi', weeklyCols(minggu), 'M1 = minggu pertama studi' + (mulaiTxt ? ' (mulai ' + mulaiTxt + ')' : '') + ', M2 = minggu kedua, dan seterusnya. Kolom gelap = minggu berjalan.');
+    html += panel('span-7 enter', 'Lembar masuk per minggu', 'sejak minggu ke-1 studi', '<div class="scroll-x">' + weeklyCols(minggu) + '</div>' + '<div class="swipe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg>Geser ke samping untuk melihat semua kolom</div>', 'M1 = minggu pertama studi' + (mulaiTxt ? ' (mulai ' + mulaiTxt + ')' : '') + ', M2 = minggu kedua, dan seterusnya. Kolom gelap = minggu berjalan.');
     // coverage weave (signature)
-    html += panel('span-7 enter', 'Cakupan suara', 'regional × tingkat keterlibatan', weave(d), null, '<div class="legend"><span><i class="c"></i>sudah terwakili, makin gelap makin banyak</span><span><i class="g"></i>belum ada suara — prioritas ajakan berikutnya</span></div>');
+    html += panel('span-7 enter', 'Cakupan suara', 'regional × tingkat keterlibatan', '<div class="scroll-x">' + weave(d) + '</div>' + '<div class="swipe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg>Geser ke samping untuk melihat semua kolom</div>', null, '<div class="legend"><span><i class="c"></i>sudah terwakili, makin gelap makin banyak</span><span><i class="g"></i>belum ada suara — prioritas ajakan berikutnya</span></div>');
     // per RQ
     var perRQ = count(t, 'rq');
-    html += panel('span-5 enter', 'Temuan per pertanyaan penelitian', '', rows(perRQ, { order: ['RQ1', 'RQ2', 'RQ3', 'RQ4', 'RQ5', 'RQ6'], label: function (k) { return k + ' ' + (RQ_LABEL[k] || ''); }, title: function (k) { return RQ_FULL[k] || k; }, cls: 'toba2' }), 'RQ = pertanyaan penelitian (research question). Arahkan kursor ke label untuk membaca pertanyaan lengkapnya; daftar lengkap ada di Keterangan istilah di bawah.');
+    html += panel('span-5 enter', 'Temuan per pertanyaan penelitian', '', rows(perRQ, { order: ['RQ1', 'RQ2', 'RQ3', 'RQ4', 'RQ5', 'RQ6'], label: function (k) { return k + ' ' + (RQ_LABEL[k] || ''); }, title: function (k) { return RQ_FULL[k] || k; }, cls: 'toba2' }), 'RQ = pertanyaan penelitian (research question). Ketuk atau arahkan kursor ke label untuk membaca pertanyaan lengkapnya; daftar lengkap ada di Keterangan istilah di bawah.');
     // kode induk
     var perKode = {}; t.forEach(function (x) { var k = (x.kode_induk || '').split(/[\s:]+/)[0]; if (k) perKode[k] = (perKode[k] || 0) + 1; });
     html += panel('span-4 enter', 'Temuan per kode induk', '', rows(perKode, { title: function (k) { return KODE_FULL[k] || k; } }), 'Kode induk = kategori tema dalam codebook analisis.');
@@ -157,6 +157,7 @@
     html += '</div>';
     $('#app').innerHTML = html;
 
+    markScrollable();
     var shown = 12;
     var mb = $('#more');
     if (mb) mb.addEventListener('click', function () {
@@ -167,6 +168,16 @@
     requestAnimationFrame(function () { document.querySelectorAll('[data-w]').forEach(function (el) { el.style.setProperty('--w', el.getAttribute('data-w') + '%'); }); document.querySelectorAll('[data-h]').forEach(function (el) { el.style.setProperty('--h', el.getAttribute('data-h') + '%'); }); });
   }
 
+  function markScrollable() {
+    document.querySelectorAll('.scroll-x').forEach(function (el) {
+      var upd = function () {
+        var can = el.scrollWidth > el.clientWidth + 2;
+        el.classList.toggle('can-scroll', can);
+        el.classList.toggle('at-end', can && el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
+      };
+      upd(); el.addEventListener('scroll', upd, { passive: true }); window.addEventListener('resize', upd);
+    });
+  }
   function kpi(l, v, unit, d) { return '<div class="kpi"><div class="l">' + l + '</div><div class="v">' + v + (unit ? '<small>' + unit + '</small>' : '') + '</div><div class="d">' + d + '</div></div>'; }
   function panel(cls, title, hint, body, note, extra) {
     return '<section class="panel ' + cls + '"><header><h2>' + esc(title) + '</h2>' + (hint ? '<span class="hint">' + esc(hint) + '</span>' : '') + '</header>' + body + (extra || '') + (note ? '<div class="note">' + esc(note) + '</div>' : '') + '</section>';
@@ -201,7 +212,7 @@
   function weeklyCols(weeks) {
     if (!weeks.length) return empty();
     var max = Math.max.apply(null, weeks.map(function (x) { return x.n; })) || 1, last = weeks.length;
-    return '<div class="cols">' + weeks.map(function (x) {
+    return '<div class="cols" style="--minw:' + (weeks.length * 50) + 'px">' + weeks.map(function (x) {
       return '<div class="col"><div class="n">' + (x.n || '') + '</div><div class="b' + (x.w === last ? ' now' : '') + '" data-h="' + Math.max(2, Math.round(100 * x.n / max)) + '" title="Minggu ' + x.w + ': ' + x.n + '"></div><div class="w">M' + x.w + '</div></div>';
     }).join('') + '</div>';
   }
@@ -219,8 +230,8 @@
       h += '<tr><td>' + esc(r) + '</td>' + L.map(function (l) {
         var v = cells[r + '|' + l] || 0; tot += v;
         if (!v) return '<td><div class="cell gap" title="' + esc(r + ' · ' + l) + ': belum ada">0</div></td>';
-        var p = Math.round(100 * v / max);
-        return '<td><div class="cell" style="--p:' + Math.max(18, p) + '" data-p="' + (p > 55 ? 'high' : 'low') + '" title="' + esc(r + ' · ' + l) + ': ' + v + '">' + v + '</div></td>';
+        var p = Math.round(65 * v / max);
+        return '<td><div class="cell" style="--p:' + Math.max(14, p) + '" title="' + esc(r + ' · ' + l) + ': ' + v + '">' + v + '</div></td>';
       }).join('') + '<td><div class="tot">' + tot + '</div></td></tr>';
     });
     return h + '</tbody></table>';
