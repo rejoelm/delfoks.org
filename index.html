@@ -289,9 +289,10 @@
     window.__view = v; if (window.__scene) window.__scene.setData(v);
   }
   (function load() {
-    var ep = window.DELFOLKS && window.DELFOLKS.endpoint, done = false;
-    function go(d, live) { if (done) return; done = true; LIVE = live; bind(view(d)); }
-    var t = setTimeout(function () { go(snap, false); }, 1800);
+    var ep = window.DELFOLKS && window.DELFOLKS.endpoint, shown = false;
+    // Apps Script answers in 2–8 s: show the snapshot first, then replace it when live data arrives.
+    function go(d, live) { if (shown && !live) return; shown = true; LIVE = live; bind(view(d)); }
+    var t = setTimeout(function () { go(snap, false); }, 1500);
     if (!ep || !window.fetch) { clearTimeout(t); return go(snap, false); }
     fetch(ep + (ep.indexOf('?') > -1 ? '&' : '?') + 'format=json&_=' + Date.now(), { redirect: 'follow' })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
