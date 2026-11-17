@@ -2,17 +2,21 @@
    World: Danau Toba. Type: Plus Jakarta Sans. Palette: tinta biru tua, air Toba, ulos merah/oker, kertas hangat. */
 
 :root{
-  --paper:#f6f3ec;
-  --paper-2:#efeae0;
-  --card:#fffdf9;
-  --ink:#14233a;
-  --ink-2:#3b4a60;
-  --ink-3:#6b7788;
-  --line:#dcd6c8;
-  --line-2:#ebe6da;
-  --toba:#1b5e7b;
-  --toba-2:#2a7fa3;
-  --toba-soft:#dfeef4;
+  /* palet dari lambang Del Folks: biru #007cc2, ungu #6c2993 */
+  --paper:#f4f6f9;
+  --paper-2:#e9eef4;
+  --card:#ffffff;
+  --ink:#16213a;
+  --ink-2:#3c4a63;
+  --ink-3:#6a7589;
+  --line:#d9e0e8;
+  --line-2:#e8edf3;
+  --toba:#007cc2;
+  --toba-2:#2a93d4;
+  --toba-soft:#e3f1fb;
+  --ungu:#6c2993;
+  --ungu-soft:#efe4f5;
+  --brand-grad:linear-gradient(135deg,#007cc2 0%,#6c2993 100%);
   --ulos:#a8342a;
   --ulos-soft:#f6e3df;
   --oker:#c98a2a;
@@ -49,20 +53,21 @@ hr{border:0;border-top:1px solid var(--line);margin:32px 0}
 button{font:inherit}
 
 /* custom scrollbar */
-*{scrollbar-color:#c9c2b2 transparent;scrollbar-width:thin}
+*{scrollbar-color:#b9c3cf transparent;scrollbar-width:thin}
 ::-webkit-scrollbar{width:10px;height:10px}
-::-webkit-scrollbar-thumb{background:#c9c2b2;border-radius:8px;border:2px solid var(--paper)}
+::-webkit-scrollbar-thumb{background:#b9c3cf;border-radius:8px;border:2px solid var(--paper)}
 ::-webkit-scrollbar-track{background:transparent}
 
 /* ---------- shell ---------- */
 .topbar{
   position:sticky;top:0;z-index:20;
-  background:rgba(246,243,236,.86);backdrop-filter:saturate(1.2) blur(10px);
+  background:rgba(244,246,249,.86);backdrop-filter:saturate(1.2) blur(10px);
   border-bottom:1px solid var(--line-2);
 }
 .topbar .in{max-width:1180px;margin:0 auto;padding:0 20px;height:58px;display:flex;align-items:center;gap:24px}
 .brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-weight:700;letter-spacing:-0.01em}
-.brand svg{width:26px;height:26px}
+.brand img{height:30px;width:30px;display:block}
+.brand span{background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:16px}
 .nav{display:flex;gap:4px;margin-left:auto}
 .nav a{
   text-decoration:none;color:var(--ink-2);padding:7px 11px;border-radius:var(--radius-sm);font-weight:500;font-size:14px;
@@ -93,15 +98,19 @@ footer a{color:var(--ink-2)}
 .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:end;padding:36px 0 28px;border-bottom:1px solid var(--line)}
 .hero p.lead{font-size:18px;color:var(--ink-2);max-width:56ch;margin-top:14px}
 .hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-.toba{position:relative;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;background:var(--toba);box-shadow:var(--shadow)}
-.toba svg{position:absolute;inset:0;width:100%;height:100%}
+.logo-panel{position:relative;aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;background:var(--card);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;border:1px solid transparent}
+.logo-panel::before{content:"";position:absolute;inset:0;background:var(--brand-grad);opacity:.06}
+.logo-panel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--brand-grad)}
+.logo-panel img{position:relative;width:min(58%,260px);height:auto;filter:drop-shadow(0 8px 18px rgba(0,124,194,.18))}
 .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:32px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .pillars > div{padding:22px 22px 22px 0}
 .pillars > div + div{border-left:1px solid var(--line);padding-left:22px}
-.pillars b{display:block;font-size:17px;margin-bottom:6px;letter-spacing:-0.01em}
+.pillars b{display:block;font-size:17px;margin-bottom:6px;letter-spacing:-0.01em;color:var(--ungu)}
 .pillars p{font-size:14px;color:var(--ink-2);margin:0}
 .strip{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid transparent;box-shadow:var(--shadow);border-radius:var(--radius);padding:16px 20px;margin-top:28px}
 .strip .n{font-size:28px;font-weight:700;color:var(--toba);line-height:1}
+.strip{position:relative;overflow:hidden}
+.strip::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--brand-grad)}
 .strip .t{font-size:14px;color:var(--ink-2)}
 .strip .sp{margin-left:auto}
 
@@ -130,7 +139,7 @@ footer a{color:var(--ink-2)}
   appearance:none;color:var(--ink);min-width:150px;
   transition:border-color 150ms var(--ease);
 }
-.filters select:hover{border-color:#bfb8a8}
+.filters select:hover{border-color:#aab6c4}
 .filters .reset{margin-left:auto;background:none;border:0;color:var(--toba);font-weight:600;font-size:13px;cursor:pointer;padding:6px 8px;border-radius:var(--radius-sm)}
 .filters .reset[hidden]{display:none}
 .scope{font-size:13px;color:var(--ink-3);margin:-8px 0 16px}
@@ -165,7 +174,7 @@ footer a{color:var(--ink-2)}
 .row .fil.target-miss{background:var(--oker)}
 .row .fil.target-hit{background:var(--hutan)}
 .row .fil.ulos{background:var(--ulos)}
-.row .fil.toba2{background:var(--toba-2)}
+.row .fil.toba2{background:var(--ungu)}
 .row .tgt{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink);opacity:.55;left:var(--t,100%)}
 .row .val{text-align:right;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
 .row .val b{color:var(--ink)}
@@ -202,13 +211,13 @@ footer a{color:var(--ink-2)}
 /* chips */
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:center;gap:8px;padding:5px 10px 5px 11px;border-radius:999px;background:var(--paper-2);font-size:13px;color:var(--ink)}
-.chip b{font-variant-numeric:tabular-nums;color:var(--toba);font-weight:700}
+.chip b{font-variant-numeric:tabular-nums;color:var(--ungu);font-weight:700}
 
 /* findings list */
 .finding{padding:12px 0;border-top:1px solid var(--line-2)}
 .finding:first-child{border-top:0;padding-top:0}
 .finding .meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);margin-bottom:5px}
-.tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.02em;background:var(--toba-soft);color:var(--toba)}
+.tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.02em;background:var(--ungu-soft);color:var(--ungu)}
 .tag.k{background:var(--paper-2);color:var(--ink-2)}
 .finding .tema{font-weight:600;margin-bottom:3px}
 .finding .q{font-style:italic;color:var(--ink);margin:0 0 4px}
