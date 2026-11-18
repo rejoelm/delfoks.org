@@ -110,6 +110,8 @@
   .coda{padding:120px 20px 80px;text-align:center;background:linear-gradient(rgba(244,246,249,0),rgba(244,246,249,.92) 30%,var(--paper))}
   .coda .in{max-width:640px;margin:0 auto;display:grid;justify-items:center;gap:16px}
   .coda p{text-align:center}
+  .coda .wa{font-size:14px;color:var(--ink-2)}
+  .coda .wa a{color:var(--biru-text);font-weight:600;text-decoration:underline;text-underline-offset:3px;display:inline-block;padding:4px 0}
   .coda .cta{justify-content:center}
   .adart{padding:40px 20px 20px;background:var(--paper)}
   .adart .card{max-width:860px;margin:0 auto;padding:28px 30px;border-radius:14px;background:#fff;border:1px solid var(--hair);box-shadow:0 1px 2px rgba(22,33,58,.06),0 18px 40px -24px rgba(22,33,58,.25);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 32px;align-items:start}
@@ -270,6 +272,7 @@
         <a class="btn" href="studi.html#ikut">Cara ikut bersuara<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <a class="btn ghost" href="studi.html">Baca tentang studi</a>
       </div>
+      <p class="note wa" id="wa-note" hidden>Belum masuk grup alumni? Hubungi narahubung <b id="wa-nama">Rejoel Siagian (Angkatan IV, Dexamenus)</b> <a id="wa-link" href="#" target="_blank" rel="noopener">lewat WhatsApp</a> dan sebutkan angkatanmu.</p>
     </div>
   </section>
 </main>
@@ -278,6 +281,7 @@
   <a href="studi.html">Tentang studi</a>
   <a href="dashboard.html">Dashboard</a>
   <a href="#adart">Draft AD/ART</a>
+  <a id="wa-foot" href="#" hidden target="_blank" rel="noopener">Narahubung: Rejoel Siagian (WhatsApp)</a>
 </div></footer>
 
 <script id="site-data" type="application/json">{"schema":"delfolks-landing-1","diperbarui":"2026-11-18T00:20:00+07:00","config":{"tanggalPublikasi":"","target":{"Wawancara":12,"Del Talks":40,"FGD":6,"Voice note":30}},"dokumen":[],"temuan":[]}</script>
@@ -291,6 +295,7 @@
   var REG = ['Sumut', 'Sumsel-Jabodetabek', 'Bandung', 'Jateng-DIY', 'Jatim-Indonesia Timur', 'Luar Negeri'];
   var REG_SHORT = ['Sumut', 'Sumsel–Jabodetabek', 'Bandung', 'Jateng–DIY', 'Jatim–Ind. Timur', 'Luar negeri'];
   var $ = function (s) { return document.querySelector(s); };
+  (function () { var w = window.DELFOLKS && window.DELFOLKS.kontakWA; if (!w) return; var u = 'https://wa.me/' + w + '?text=Halo%2C%20saya%20alumni%20SMA%20Unggul%20Del%20angkatan%20___%20dan%20ingin%20bergabung%20ke%20grup%20Del%20Folks.'; ['wa-link', 'wa-foot'].forEach(function (id) { var a = document.getElementById(id); if (a) { a.href = u; a.hidden = false; } }); var n = document.getElementById('wa-note'); if (n) n.hidden = false; var nm = document.getElementById('wa-nama'); if (nm && window.DELFOLKS.kontakNama) nm.textContent = window.DELFOLKS.kontakNama; })();
   (function () { var u = window.DELFOLKS && window.DELFOLKS.adart, sec = document.getElementById('adart'), a = document.getElementById('adart-link'); if (u && a) a.href = u; else if (sec) { sec.hidden = true; document.querySelectorAll('a[href="#adart"]').forEach(function (n) { n.hidden = true; }); } })();
 
   var fmt = function (n) { return n == null ? '—' : new Intl.NumberFormat('id-ID').format(n); };
@@ -460,7 +465,7 @@
     // simpul: depan terang dan bernapas, belakang samar
     S.forEach(function (p, i) { var front = p[2] > 0, rad = 6.5, pulse = 1 + 0.18 * Math.sin(t * 2 + i); g.globalAlpha = front ? 1 : 0.14; g.fillStyle = SCR.node; g.beginPath(); g.arc(p[0], p[1], rad * pulse, 0, Math.PI * 2); g.fill(); if (front) { g.globalAlpha = 0.35; g.beginPath(); g.arc(p[0], p[1], rad * pulse * 2.1, 0, Math.PI * 2); g.fill(); } });
     // lingkar yang melebar bergiliran dari simpul-simpul depan: setiap kota bisa memulai hubungan
-    var ring = Math.floor(t * 0.45) % S.length, hr = S[ring]; if (hr[2] > 0) { g.strokeStyle = SCR.node; g.lineWidth = 2.5; var w = (t * 0.45) % 1; g.globalAlpha = 0.8 - 0.8 * w; g.beginPath(); g.arc(hr[0], hr[1], 10 + 30 * w, 0, Math.PI * 2); g.stroke(); }
+    var ring = ((Math.floor(t * 0.45) % S.length) + S.length) % S.length, hr = S[ring]; if (hr[2] > 0) { g.strokeStyle = SCR.node; g.lineWidth = 2.5; var w = (t * 0.45) % 1; g.globalAlpha = 0.8 - 0.8 * w; g.beginPath(); g.arc(hr[0], hr[1], 10 + 30 * w, 0, Math.PI * 2); g.stroke(); }
     g.globalAlpha = 1;
     // teks (ukuran huruf menyusut bila kalimat lebih lebar dari ruang yang tersedia)
     var tx = Wc * 0.5, maxW = Wc * 0.47;
@@ -559,7 +564,7 @@
 
   var last = performance.now(), frameN = 0;
   function frame_(now) {
-    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    var dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now;
     cur += (target - cur) * (REDUCED ? 1 : 0.08);
     var a = Math.floor(cur), b = Math.min(STAGES - 1, a + 1), t = smooth(cur - a);
     driftT += dt;
