@@ -202,7 +202,7 @@
           <div class="d" id="reg-desc">—</div>
           <div class="d" id="reg-cities" style="margin-top:6px"></div>
           <div class="tiles">
-            <div class="tile"><b id="reg-kota">—</b><small>kota kampus</small></div>
+            <div class="tile"><b id="reg-kota">—</b><small>kota</small></div>
             <div class="tile"><b id="reg-alumni">—</b><small>alumni pernah kuliah di sini</small></div>
             <div class="tile"><b id="reg-n">—</b><small>suara dari regional ini</small></div>
           </div>
@@ -367,16 +367,16 @@
   // kota kampus tempat alumni kuliah setelah lulus SMA, per regional: [nama, lat, lon, jumlah alumni | null bila laporan tidak menyebut angka]
   // Sumber: Peta Alumni SMA Unggul Del 2015–2026 (13 Nov 2026) — kampus teratas, negara tujuan, dan lokasi studi doktoral.
   var CITIES = [
-    [['Medan (USU)', 3.6, 98.7, 119]],
-    [['Depok–Jakarta (UI)', -6.37, 106.83, 152], ['Bandar Lampung (Unila)', -5.43, 105.26, 4]],
-    [['Bandung (ITB)', -6.9, 107.6, 398], ['Jatinangor (UNPAD)', -6.93, 107.77, 109]],
-    [['Yogyakarta (UGM)', -7.8, 110.4, 123], ['Semarang (UNDIP)', -6.97, 110.42, 87]],
-    [['Malang (UB)', -7.98, 112.63, 99], ['Surabaya (ITS, UNAIR)', -7.3, 112.7, 98]],
-    [['Toronto', 43.7, -79.4, 28], ['Vancouver (UBC)', 49.3, -123.1, 17], ['Sydney', -33.9, 151.2, 16], ['Australia, kota lain', -27.0, 135.0, 14], ['Amerika Serikat', 39.5, -98.0, 10], ['Belanda', 52.2, 5.5, 8], ['Taiwan', 23.8, 121.0, 6], ['Tiongkok', 35.0, 105.0, 4],
+    [['Medan', 3.6, 98.7, 119]],
+    [['Depok–Jakarta', -6.37, 106.83, 152], ['Bandar Lampung', -5.43, 105.26, 4]],
+    [['Bandung', -6.9, 107.6, 398], ['Jatinangor', -6.93, 107.77, 109]],
+    [['Yogyakarta', -7.8, 110.4, 123], ['Semarang', -6.97, 110.42, 87]],
+    [['Malang', -7.98, 112.63, 99], ['Surabaya', -7.3, 112.7, 98]],
+    [['Toronto', 43.7, -79.4, 28], ['Vancouver', 49.3, -123.1, 17], ['Sydney', -33.9, 151.2, 16], ['Australia, kota lain', -27.0, 135.0, 14], ['Amerika Serikat', 39.5, -98.0, 10], ['Belanda', 52.2, 5.5, 8], ['Taiwan', 23.8, 121.0, 6], ['Tiongkok', 35.0, 105.0, 4],
      ['Hong Kong', 22.3, 114.2, null], ['Singapura', 1.35, 103.8, null], ['Malaysia', 3.1, 101.7, null], ['Inggris', 52.5, -1.5, null],
-     ['Wageningen · PhD', 51.97, 5.67, 1], ['Urbana-Champaign · PhD', 40.1, -88.2, 1], ['Lyngby · PhD', 55.78, 12.52, 1], ['Oxford · PhD', 51.75, -1.26, 1], ['Chicago · PhD', 41.87, -87.65, 1], ['Hsinchu · PhD', 24.8, 120.97, 1], ['Trondheim · PhD', 63.43, 10.4, 1], ['London · PhD', 51.5, -0.1, 1]]
+     ['Wageningen', 51.97, 5.67, 1], ['Urbana-Champaign', 40.1, -88.2, 1], ['Lyngby', 55.78, 12.52, 1], ['Oxford', 51.75, -1.26, 1], ['Chicago', 41.87, -87.65, 1], ['Hsinchu', 24.8, 120.97, 1], ['Trondheim', 63.43, 10.4, 1], ['London', 51.5, -0.1, 1]]
   ];
-  var REG_DESC = ['Aceh, Sumut, Sumbar, Riau, Kepri — pintu utama calon dokter (USU)', 'Sumsel, Lampung, Jambi, Bengkulu, Babel, dan Jabodetabek', 'Bandung dan Jatinangor — satu dari empat alumni masuk ITB', 'Jawa Tengah dan D.I. Yogyakarta', 'Jawa Timur, Kalimantan, Bali, Nusa Tenggara, Sulawesi, Maluku, Papua', 'Kanada dan Australia terbanyak; delapan alumni di jalur PhD'];
+  var REG_DESC = ['Aceh, Sumut, Sumbar, Riau, Kepri', 'Sumsel, Lampung, Jambi, Bengkulu, Babel, dan Jabodetabek', 'Bandung dan Jatinangor — satu dari empat alumni kuliah di sini', 'Jawa Tengah dan D.I. Yogyakarta', 'Jawa Timur, Kalimantan, Bali, Nusa Tenggara, Sulawesi, Maluku, Papua', 'Kanada dan Australia terbanyak; delapan alumni di jalur PhD'];
   function ll(lat, lon) { var la = lat * Math.PI / 180, lo = lon * Math.PI / 180; return [Math.cos(la) * Math.cos(lo), Math.sin(la), -Math.cos(la) * Math.sin(lo)]; } // bujur timur ke arah -z: dilihat dari kamera (+z), timur berada di kanan, seperti peta biasa
   var NODES = []; CITIES.forEach(function (list, b) { list.forEach(function (c) { NODES.push({ name: c[0], block: b, v: ll(c[1], c[2]), count: c[3] }); }); });
   function nodeSize(n) { return n.count == null ? 2.2 : 2.4 + 1.7 * Math.log10(n.count + 1); } // 1 → 2.9, 100 → 5.8, 400 → 6.8 (dibatasi 20 px oleh shader)
@@ -500,7 +500,7 @@
   var labels = document.getElementById('labels');
   function mkLabel(txt) { var el = document.createElement('div'); el.className = 'lbl'; el.textContent = txt; labels.appendChild(el); return el; }
   // [nama, geser vertikal px]: label Jawa dipisah atas/bawah supaya tidak bertumpuk; kota Jawa lainnya tercantum di kartu regional
-  var LABELED = [['Bandung (ITB)', -10], ['Depok–Jakarta (UI)', 26], ['Medan (USU)', -10], ['Toronto', -10], ['Vancouver (UBC)', -10], ['Sydney', -10], ['Amerika Serikat', 26], ['Belanda', -10], ['Taiwan', -10], ['Oxford · PhD', -10]];
+  var LABELED = [['Bandung', -10], ['Depok–Jakarta', 26], ['Medan', -10], ['Toronto', -10], ['Vancouver', -10], ['Sydney', -10], ['Amerika Serikat', 26], ['Belanda', -10], ['Taiwan', -10], ['Oxford', -10]];
   var cityLabels = LABELED.map(function (L) { var nm = L[0], k = NODES.findIndex(function (n) { return n.name === nm; }); return { el: mkLabel(k >= 0 && NODES[k].count != null ? nm + ' · ' + fmt(NODES[k].count) : nm), k: k, dy: L[1] }; }).filter(function (l) { return l.k >= 0; });
   function placeLabel(el, x, y, z, on, dy) {
     tmpA.set(x, y, z); world.localToWorld(tmpA);
