@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Del Folks — Kursi kita berbeda, panggungnya satu</title>
-<meta name="description" content="Alumni SMA Unggul Del sedang merancang Del Folks dari suara alumninya sendiri. Lihat seperti apa panggung itu dari kursimu, dan ambil bagian.">
-<meta property="og:title" content="Del Folks — Kursi kita berbeda, panggungnya satu">
-<meta property="og:description" content="Sebelum Del Folks dibentuk, kami ingin tahu seperti apa panggung itu terlihat dari kursimu. Studi alumni yang terbuka dan anonim.">
+<title>Del Folks — Perspektif kita berbeda, tujuan kita satu</title>
+<meta name="description" content="Alumni SMA Unggul Del sedang merancang Del Folks dari suara alumninya sendiri. Sampaikan tujuan bersama yang terlihat dari perspektif Anda, dan ambil bagian.">
+<meta property="og:title" content="Del Folks — Perspektif kita berbeda, tujuan kita satu">
+<meta property="og:description" content="Untuk memperkuat jejaring Del Folks, kami ingin mendengar suara Anda terkait tujuan bersama yang terlihat dari perspektif Anda. Studi alumni yang terbuka dan anonim.">
 <meta property="og:image" content="https://delfolks.org/icons/icon-512.png">
 <meta property="og:url" content="https://delfolks.org/">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -160,8 +160,8 @@
   <section class="scene hero left" id="aula">
     <div class="in">
       <div class="copy">
-        <h1>Kursi kita berbeda. Panggungnya satu.</h1>
-        <p class="lead">Alumni Del duduk di angkatan dan kota yang berbeda, dengan pengalaman yang tidak sama. Sebelum Del Folks dibentuk, kami ingin tahu seperti apa panggung itu terlihat dari kursimu.</p>
+        <h1>Perspektif kita berbeda. Tujuan kita satu.</h1>
+        <p class="lead">Alumni Del tersebar di kota yang berbeda, dengan pengalaman serta keahlian yang berbeda-beda. Untuk memperkuat jejaring Del Folks, kami ingin mendengar suara Anda terkait Tujuan bersama yang terlihat dari perspektif Anda.</p>
         <div class="cta">
           <a class="btn" href="studi.html#ikut">Ambil kursimu<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
           <a class="btn ghost" href="dashboard.html">Lihat progres studi</a>
@@ -416,9 +416,9 @@
   var screen = new THREE.Mesh(new THREE.PlaneGeometry(SCREEN_W, SCREEN_H), new THREE.MeshBasicMaterial({ map: screenTex, transparent: true, opacity: 1 }));
   screen.position.set(0, SCREEN_Y0 + SCREEN_H / 2, STAGE_Z - 0.2); world.add(screen);
   // layar: globe dengan simpul alumni di seluruh dunia yang saling terhubung (proyeksi ortografis di kanvas 2D)
-  var SCR = { bg: '#172641', bg2: '#0d152a', text: '#edf2f8', sub: '#bfccdb', globe: '#213459', line: '#608ab5', node: '#6ee5f9', home: '#ffbb53', arc: '#43d5dc' };
+  var SCR = { bg: '#172641', bg2: '#0d152a', text: '#edf2f8', sub: '#bfccdb', globe: '#213459', line: '#608ab5', node: '#6ee5f9', arc: '#43d5dc' };
   var GLOBE = (function () {
-    // [lat, lon] kota tempat alumni tersebar; indeks 0 = Laguboti, asal semua
+    // [lat, lon] kota-kota tempat alumni tersebar; semua simpul setara
     var pts = [[2.4, 99.2], [-6.2, 106.8], [-6.9, 107.6], [-7.8, 110.4], [-7.3, 112.7], [-5.1, 119.4], [-8.7, 115.2], [3.6, 98.7], [1.35, 103.8], [3.1, 101.7],
       [35.7, 139.7], [37.6, 127.0], [22.3, 114.2], [25.0, 121.5], [14.6, 121.0], [39.9, 116.4], [-33.9, 151.2], [-37.8, 145.0], [-36.8, 174.8], [28.6, 77.2],
       [25.2, 55.3], [24.7, 46.7], [41.0, 29.0], [30.0, 31.2], [-1.3, 36.8], [-33.9, 18.4], [51.5, -0.1], [48.9, 2.4], [52.4, 4.9], [52.5, 13.4],
@@ -431,7 +431,6 @@
     function add(a, b) { var k = a < b ? a + '-' + b : b + '-' + a; if (edges[k] || a === b) return; edges[k] = 1; list.push([a, b]); }
     V.forEach(function (a, i) { var d = V.map(function (b, j) { return [i === j ? 9 : Math.acos(Math.max(-1, Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]))), j]; }).sort(function (x, y) { return x[0] - y[0]; }); add(i, d[0][1]); add(i, d[1][1]); });
     for (var k = 0; k < 14; k++) add(Math.floor(rr() * V.length), Math.floor(rr() * V.length));
-    for (var h = 1; h < 10; h++) add(0, h); // Laguboti ke kota-kota terdekat
     var pulses = []; for (var q = 0; q < 10; q++) pulses.push({ e: Math.floor(rr() * list.length), ph: rr(), sp: 0.12 + rr() * 0.1 });
     return { V: V, edges: list, pulses: pulses };
   })();
@@ -459,21 +458,21 @@
     // denyut yang berjalan di sepanjang busur
     GLOBE.pulses.forEach(function (pu) { var pts = ARC[pu.e], k = (t * pu.sp + pu.ph) % 1, i = Math.min(pts.length - 1, Math.floor(k * (pts.length - 1))), p = pts[i]; if (p[2] < 0) return; g.globalAlpha = 0.9; g.fillStyle = SCR.text; g.beginPath(); g.arc(p[0], p[1], 5, 0, Math.PI * 2); g.fill(); });
     // simpul: depan terang dan bernapas, belakang samar
-    S.forEach(function (p, i) { var front = p[2] > 0, rad = i === 0 ? 11 : 6.5, pulse = 1 + 0.18 * Math.sin(t * 2 + i); g.globalAlpha = front ? 1 : 0.14; g.fillStyle = i === 0 ? SCR.home : SCR.node; g.beginPath(); g.arc(p[0], p[1], rad * pulse, 0, Math.PI * 2); g.fill(); if (front) { g.globalAlpha = 0.35; g.beginPath(); g.arc(p[0], p[1], rad * pulse * 2.1, 0, Math.PI * 2); g.fill(); } });
-    // lingkar yang melebar dari Laguboti
-    var h0 = S[0]; if (h0[2] > 0) { g.strokeStyle = SCR.home; g.lineWidth = 3; var w = Math.abs(Math.sin(t * 1.2)); g.globalAlpha = 0.9 - 0.8 * w; g.beginPath(); g.arc(h0[0], h0[1], 16 + 28 * w, 0, Math.PI * 2); g.stroke(); }
+    S.forEach(function (p, i) { var front = p[2] > 0, rad = 6.5, pulse = 1 + 0.18 * Math.sin(t * 2 + i); g.globalAlpha = front ? 1 : 0.14; g.fillStyle = SCR.node; g.beginPath(); g.arc(p[0], p[1], rad * pulse, 0, Math.PI * 2); g.fill(); if (front) { g.globalAlpha = 0.35; g.beginPath(); g.arc(p[0], p[1], rad * pulse * 2.1, 0, Math.PI * 2); g.fill(); } });
+    // lingkar yang melebar bergiliran dari simpul-simpul depan: setiap kota bisa memulai hubungan
+    var ring = Math.floor(t * 0.45) % S.length, hr = S[ring]; if (hr[2] > 0) { g.strokeStyle = SCR.node; g.lineWidth = 2.5; var w = (t * 0.45) % 1; g.globalAlpha = 0.8 - 0.8 * w; g.beginPath(); g.arc(hr[0], hr[1], 10 + 30 * w, 0, Math.PI * 2); g.stroke(); }
     g.globalAlpha = 1;
     // teks (ukuran huruf menyusut bila kalimat lebih lebar dari ruang yang tersedia)
     var tx = Wc * 0.5, maxW = Wc * 0.47;
     function fit(weight, size, str) { g.font = weight + ' ' + Math.round(size) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; var w = g.measureText(str).width; if (w > maxW) g.font = weight + ' ' + Math.round(size * maxW / w) + 'px "Plus Jakarta Sans", system-ui, sans-serif'; }
     g.fillStyle = SCR.text; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
-    fit('700', Hc * 0.13, 'Satu jejaring, satu panggung'); g.fillText('Satu jejaring, satu panggung', tx, Hc * 0.4);
+    fit('700', Hc * 0.13, 'Satu jejaring, satu tujuan'); g.fillText('Satu jejaring, satu tujuan', tx, Hc * 0.4);
     g.fillStyle = SCR.sub;
-    fit('500', Hc * 0.062, 'Alumni Del tersebar di seluruh dunia dan tetap saling terhubung.'); g.fillText('Alumni Del tersebar di seluruh dunia dan tetap saling terhubung.', tx, Hc * 0.54);
-    fit('500', Hc * 0.062, 'Semua bermula dari Laguboti.'); g.fillText('Semua bermula dari Laguboti.', tx, Hc * 0.65);
+    fit('500', Hc * 0.062, 'Alumni Del tersebar di seluruh dunia,'); g.fillText('Alumni Del tersebar di seluruh dunia,', tx, Hc * 0.54);
+    fit('500', Hc * 0.062, 'saling terhubung dan bersatu dengan yang lain.'); g.fillText('saling terhubung dan bersatu dengan yang lain.', tx, Hc * 0.65);
     g.font = '600 ' + Math.round(Hc * 0.048) + 'px "Plus Jakarta Sans", system-ui, sans-serif';
-    g.fillStyle = SCR.home; g.beginPath(); g.arc(tx + Hc * 0.03, Hc * 0.78, Hc * 0.022, 0, Math.PI * 2); g.fill(); g.fillStyle = SCR.sub; g.fillText('Laguboti, asal', tx + Hc * 0.08, Hc * 0.795);
-    g.fillStyle = SCR.node; g.beginPath(); g.arc(tx + Hc * 0.6, Hc * 0.78, Hc * 0.018, 0, Math.PI * 2); g.fill(); g.fillStyle = SCR.sub; g.fillText('Kota tempat alumni berada', tx + Hc * 0.65, Hc * 0.795);
+    g.fillStyle = SCR.node; g.beginPath(); g.arc(tx + Hc * 0.03, Hc * 0.78, Hc * 0.018, 0, Math.PI * 2); g.fill(); g.fillStyle = SCR.sub; g.fillText('Titik: alumni di satu kota', tx + Hc * 0.08, Hc * 0.795);
+    g.strokeStyle = SCR.arc; g.lineWidth = 3; g.beginPath(); g.moveTo(tx + Hc * 0.72, Hc * 0.78); g.lineTo(tx + Hc * 0.84, Hc * 0.78); g.stroke(); g.fillStyle = SCR.sub; g.fillText('Garis: hubungan antar alumni', tx + Hc * 0.9, Hc * 0.795);
     screenTex.needsUpdate = true;
   }
   drawScreen(0);
