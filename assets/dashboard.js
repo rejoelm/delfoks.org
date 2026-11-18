@@ -11,12 +11,12 @@
   var LVL_ORDER = ['aktif', 'pernah aktif', 'pasif'];
   var RQ_LABEL = { RQ1: 'Makna', RQ2: 'Hambatan', RQ3: 'Program', RQ4: 'Struktur & iuran', RQ5: 'Kepercayaan', RQ6: 'Kesediaan' };
   var RQ_FULL = {
-    RQ1: 'Apa makna Del Folks bagi alumni, dan apa yang mereka harapkan darinya?',
-    RQ2: 'Mengapa sebagian alumni tidak terlibat atau bergerak sendiri-sendiri? Hambatan apa yang dirasakan?',
-    RQ3: 'Program dan layanan apa yang dianggap paling bernilai?',
-    RQ4: 'Bagaimana penilaian alumni terhadap rancangan struktur, iuran wajib, pembagian regional, dan pemilihan ketua umum?',
-    RQ5: 'Tata kelola, komunikasi, dan akuntabilitas seperti apa yang membuat alumni percaya?',
-    RQ6: 'Peran apa yang bersedia diambil alumni, dengan syarat apa?'
+    RQ1: 'Apa makna Del Folks bagi alumni, dan apa yang Anda harapkan darinya?',
+    RQ2: 'Menurutmu apakah mayoritas alumni saat ini bergerak sendiri-sendiri? Apa yang menghambat untuk alumni lebih kompak?',
+    RQ3: 'Program apa yang dianggap paling bernilai dan dibutuhkan saat ini dan ke depan?',
+    RQ4: 'Bagaimana harapan Anda terhadap struktur, iuran, pembagian regional, dan pemilihan ketua?',
+    RQ5: 'Tata kelola seperti apa yang membuat alumni percaya?',
+    RQ6: 'Menurutmu peran apa yang bersedia diambil alumni, dengan syarat apa?'
   };
   var KODE_FULL = {
     MAKNA: 'arti Del dan Del Folks bagi alumni', HARAPAN: 'program dan manfaat yang diharapkan', HAMBATAN: 'alasan tidak terlibat',
