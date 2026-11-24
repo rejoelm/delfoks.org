@@ -126,6 +126,44 @@
   footer .in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 24px}
   footer a{color:var(--ink-2);display:inline-block;padding:3px 0}
 
+  /* ---- interaksi bola: tooltip kota, popover regional, batang yang bisa diklik ---- */
+  #gl{pointer-events:auto}
+  .scene, .tail{pointer-events:none}
+  .scene .copy, .tail .in-tail, .dock, .topbar, .badge, .hint{pointer-events:auto}
+  #gl.hot{cursor:pointer}
+  .tip{position:fixed;z-index:12;pointer-events:none;translate:-50% calc(-100% - 14px);background:var(--ink);color:#fff;font-size:12.5px;line-height:1.35;padding:7px 10px;border-radius:8px;box-shadow:0 6px 18px -8px rgba(22,33,58,.5);opacity:0;transition:opacity 150ms ease-out;white-space:nowrap;max-width:min(320px,90vw)}
+  .tip.on{opacity:1}
+  .tip b{display:block;font-size:13px}
+  .pop{position:fixed;z-index:11;width:300px;max-width:calc(100vw - 24px);translate:-50% 16px;background:#fff;border:1px solid var(--hair);border-radius:12px;box-shadow:0 1px 2px rgba(22,33,58,.06),0 22px 44px -20px rgba(22,33,58,.35);padding:14px 16px 12px;opacity:0;visibility:hidden;pointer-events:none;filter:blur(4px);transition:opacity 150ms ease-out,filter 150ms ease-out,visibility 0s linear 150ms}
+  .pop.on{opacity:1;visibility:visible;pointer-events:auto;filter:blur(0);transition:opacity 300ms ease-out,filter 300ms ease-out,visibility 0s}
+  .pop::before{content:"";position:absolute;left:50%;top:-6px;width:10px;height:10px;background:#fff;border-left:1px solid var(--hair);border-top:1px solid var(--hair);transform:translateX(-50%) rotate(45deg)}
+  .pop.up{translate:-50% calc(-100% - 16px)}
+  .pop.up::before{top:auto;bottom:-6px;border:0;border-right:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+  .pop h3{font-size:1.05rem;letter-spacing:-.01em;line-height:1.2;margin:0 28px 2px 0}
+  .pop .sub{font-size:12.5px;color:var(--ink-2)}
+  .pop .x{position:absolute;right:6px;top:6px;width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:var(--ink-2);font:inherit;cursor:pointer;display:grid;place-items:center}
+  .pop .x svg{width:16px;height:16px}
+  @media (hover:hover){.pop .x:hover{background:var(--paper-2);color:var(--ink)}}
+  .pop .x:focus-visible{outline:2px solid var(--biru);outline-offset:2px}
+  .pop .grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin-top:10px}
+  .pop .grid div{background:var(--paper);border:1px solid var(--hair);border-radius:8px;padding:7px 9px}
+  .pop .grid b{display:block;font-size:1.15rem;letter-spacing:-.01em}
+  .pop .grid small{display:block;font-size:11.5px;color:var(--ink-2);line-height:1.25}
+  .pop .tema{margin-top:10px;font-size:12.5px;color:var(--ink-2)}
+  .pop .tema b{color:var(--ink);font-weight:600}
+  .pop .acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .pop .acts a,.pop .acts button{font:inherit;font-size:12.5px;font-weight:600;padding:7px 11px;border-radius:8px;border:1px solid #8c99aa;background:transparent;color:var(--biru-text);text-decoration:none;cursor:pointer}
+  .pop .acts .pri{background:var(--biru);border-color:transparent;color:#fff}
+  @media (hover:hover){.pop .acts a:hover,.pop .acts button:hover{background:var(--biru-soft)}.pop .acts .pri:hover{background:var(--brand)}}
+  .pop .acts a:focus-visible,.pop .acts button:focus-visible{outline:2px solid var(--biru);outline-offset:2px}
+  .pop[hidden]{display:none}
+  .bar{cursor:pointer;border-radius:6px}
+  .bar.on span:first-child{color:var(--ungu);font-weight:600}
+  .bar.on .f{background:var(--ungu)}
+  button.bar{font:inherit;color:inherit;background:none;border:0;padding:2px 4px;margin:0 -4px;text-align:left;width:calc(100% + 8px)}
+  button.bar:focus-visible{outline:2px solid var(--biru);outline-offset:2px}
+  @media (hover:hover){button.bar:hover span:first-child{color:var(--ink)}}
+  @media (prefers-reduced-motion:reduce){.pop{filter:none;transition:opacity 200ms ease-out,visibility 0s linear 200ms}.pop.on{transition:opacity 200ms ease-out,visibility 0s}}
   /* ---- mode satu layar (desktop): panel bergantian lewat klik, tanpa scroll ---- */
   .next{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:14px;font-weight:600;color:var(--biru-text);text-decoration:none;padding:6px 0;border-radius:6px}
   .next svg{width:16px;height:16px;transition:translate 150ms ease-out}
@@ -133,9 +171,10 @@
   .next:focus-visible{outline:2px solid var(--biru);outline-offset:3px}
   .hint{position:fixed;left:50%;bottom:max(62px,calc(env(safe-area-inset-bottom) + 62px));transform:translateX(-50%);z-index:9;font-size:12px;color:var(--ink-3);display:none}
   html.one, html.one body{height:100%;overflow:hidden;overscroll-behavior:none}
-  html.one main{position:fixed;inset:0;z-index:1}
-  html.one .scene, html.one .tail{position:absolute;inset:0;min-height:0;padding:84px max(20px,env(safe-area-inset-right)) 76px max(20px,env(safe-area-inset-left));opacity:0;pointer-events:none;visibility:hidden;filter:blur(4px);translate:0 12px;transition:opacity 150ms ease-out,filter 150ms ease-out,translate 150ms ease-out,visibility 0s linear 150ms}
-  html.one .scene.on, html.one .tail.on{opacity:1;pointer-events:auto;visibility:visible;filter:blur(0);translate:0 0;transition:opacity 300ms ease-out,filter 300ms ease-out,translate 300ms ease-out,visibility 0s}
+  html.one main{position:fixed;inset:0;z-index:1;pointer-events:none}
+  main{pointer-events:none}
+  html.one .scene, html.one .tail{position:absolute;inset:0;min-height:0;padding:84px max(20px,env(safe-area-inset-right)) 76px max(20px,env(safe-area-inset-left));opacity:0;visibility:hidden;filter:blur(4px);translate:0 12px;transition:opacity 150ms ease-out,filter 150ms ease-out,translate 150ms ease-out,visibility 0s linear 150ms}
+  html.one .scene.on, html.one .tail.on{opacity:1;visibility:visible;filter:blur(0);translate:0 0;transition:opacity 300ms ease-out,filter 300ms ease-out,translate 300ms ease-out,visibility 0s}
   html.one .scene.off{translate:0 -12px}
   @media (prefers-reduced-motion:reduce){html.one .scene, html.one .tail{filter:none;translate:0 0;transition:opacity 200ms ease-out,visibility 0s linear 200ms}html.one .scene.on, html.one .tail.on{transition:opacity 200ms ease-out,visibility 0s}}
   html.one .copy{max-height:calc(100svh - 170px);overflow:auto;overscroll-behavior:contain}
@@ -166,6 +205,23 @@
 <body>
 <canvas id="gl" aria-hidden="true"></canvas>
 <div id="labels" aria-hidden="true"></div>
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+<div class="pop" id="pop" role="dialog" aria-labelledby="pop-h" hidden>
+  <button type="button" class="x" id="pop-x" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <h3 id="pop-h">—</h3>
+  <div class="sub" id="pop-sub">—</div>
+  <div class="grid">
+    <div><b id="pop-alumni">—</b><small>alumni pernah kuliah di regional ini</small></div>
+    <div><b id="pop-kota">—</b><small>kota di peta</small></div>
+    <div><b id="pop-suara">—</b><small>suara dari studi</small></div>
+    <div><b id="pop-temuan">—</b><small>temuan terkode</small></div>
+  </div>
+  <div class="tema" id="pop-tema"></div>
+  <div class="acts">
+    <button type="button" class="pri" id="pop-pilih">Lihat dari regional ini</button>
+    <a href="dashboard.html" id="pop-dash">Semua suara di dashboard</a>
+  </div>
+</div>
 
 <header class="topbar">
   <a class="brand" href="index.html" aria-label="Del Folks, beranda"><img src="assets/mark.svg" alt=""><span>Del Folks</span></a>
@@ -348,7 +404,7 @@
     var tema = {}; tem.forEach(function (t) { var k = (t.tema || '').trim().toLowerCase(); if (k) tema[k] = (tema[k] || 0) + 1; });
     var top = Object.keys(tema).sort(function (a, b) { return tema[b] - tema[a]; }).slice(0, 6).map(function (k) { return [k, tema[k]]; });
     var peta = d.peta || snap.peta || {};
-    return { suara: suara, lembar: dok.length, temuan: tem.length, perReg: perReg, regionalN: Object.keys(regs).length, top: top, dok: dok,
+    return { suara: suara, lembar: dok.length, temuan: tem.length, perReg: perReg, regionalN: Object.keys(regs).length, top: top, dok: dok, tem: tem,
       petaAlumni: peta.alumni, petaKampus: peta.kampus, petaLuar: peta.luarNegeri, petaSumber: peta.sumber, petaTanggal: peta.tanggal ? new Date(peta.tanggal).toLocaleDateString('id-ID', { dateStyle: 'long' }) : null,
       asof: d.diperbarui ? new Date(d.diperbarui).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) : null,
       publikasi: (d.config && d.config.tanggalPublikasi) || (window.DELFOLKS && window.DELFOLKS.targetPublikasi) || null };
@@ -360,7 +416,8 @@
       else el.textContent = (typeof val === 'number') ? fmt(val) : (val == null ? '—' : val);
     });
     var max = Math.max.apply(null, v.perReg) || 1;
-    $('#bars').innerHTML = REG_SHORT.map(function (r, i) { return '<div class="bar"><span>' + r + '</span><div class="t"><div class="f" style="--w:' + Math.round(100 * v.perReg[i] / max) + '%"></div></div><span class="v">' + fmt(v.perReg[i]) + '</span></div>'; }).join('');
+    $('#bars').innerHTML = REG_SHORT.map(function (r, i) { return '<button type="button" class="bar" data-reg="' + i + '" aria-pressed="false" title="Putar bola ke regional ' + r + '"><span>' + r + '</span><div class="t"><div class="f" style="--w:' + Math.round(100 * v.perReg[i] / max) + '%"></div></div><span class="v">' + fmt(v.perReg[i]) + '</span></button>'; }).join('');
+    $('#bars').querySelectorAll('button.bar').forEach(function (b) { b.addEventListener('click', function () { if (window.__scene) window.__scene.pickRegional(+b.getAttribute('data-reg'), true); }); });
     $('#empty').hidden = v.suara > 0;
     var tw = $('#tema-wrap');
     if (v.top.length) { tw.hidden = false; $('#tema').innerHTML = v.top.map(function (t) { return '<span class="chip">' + esc(t[0]) + '<b>' + t[1] + '</b></span>'; }).join(''); } else tw.hidden = true;
@@ -407,11 +464,11 @@
     [['Malang', -7.98, 112.63, 99], ['Surabaya', -7.3, 112.7, 98]],
     [['Toronto', 43.7, -79.4, 28], ['Vancouver', 49.3, -123.1, 17], ['Sydney', -33.9, 151.2, 16], ['Australia, kota lain', -27.0, 135.0, 14], ['Amerika Serikat', 39.5, -98.0, 10], ['Belanda', 52.2, 5.5, 8], ['Taiwan', 23.8, 121.0, 6], ['Tiongkok', 35.0, 105.0, 4],
      ['Hong Kong', 22.3, 114.2, null], ['Singapura', 1.35, 103.8, null], ['Malaysia', 3.1, 101.7, null], ['Inggris', 52.5, -1.5, null],
-     ['Wageningen', 51.97, 5.67, 1], ['Urbana-Champaign', 40.1, -88.2, 1], ['Lyngby', 55.78, 12.52, 1], ['Oxford', 51.75, -1.26, 1], ['Chicago', 41.87, -87.65, 1], ['Hsinchu', 24.8, 120.97, 1], ['Trondheim', 63.43, 10.4, 1], ['London', 51.5, -0.1, 1]]
+     ['Wageningen', 51.97, 5.67, 1, 'phd'], ['Urbana-Champaign', 40.1, -88.2, 1, 'phd'], ['Lyngby', 55.78, 12.52, 1, 'phd'], ['Oxford', 51.75, -1.26, 1, 'phd'], ['Chicago', 41.87, -87.65, 1, 'phd'], ['Hsinchu', 24.8, 120.97, 1, 'phd'], ['Trondheim', 63.43, 10.4, 1, 'phd'], ['London', 51.5, -0.1, 1, 'phd']] // 'phd' = lokasi studi doktoral, tidak dijumlahkan ke total S1 luar negeri
   ];
   var REG_DESC = ['Aceh, Sumut, Sumbar, Riau, Kepri', 'Sumsel, Lampung, Jambi, Bengkulu, Babel, dan Jabodetabek', 'Bandung dan Jatinangor — satu dari empat alumni kuliah di sini', 'Jawa Tengah dan D.I. Yogyakarta', 'Jawa Timur, Kalimantan, Bali, Nusa Tenggara, Sulawesi, Maluku, Papua', 'Kanada dan Australia terbanyak; delapan alumni di jalur PhD'];
   function ll(lat, lon) { var la = lat * Math.PI / 180, lo = lon * Math.PI / 180; return [Math.cos(la) * Math.cos(lo), Math.sin(la), -Math.cos(la) * Math.sin(lo)]; } // bujur timur ke arah -z: dilihat dari kamera (+z), timur berada di kanan, seperti peta biasa
-  var NODES = []; CITIES.forEach(function (list, b) { list.forEach(function (c) { NODES.push({ name: c[0], block: b, v: ll(c[1], c[2]), count: c[3] }); }); });
+  var NODES = []; CITIES.forEach(function (list, b) { list.forEach(function (c) { NODES.push({ name: c[0], block: b, v: ll(c[1], c[2]), count: c[3], phd: c[4] === 'phd' }); }); });
   function nodeSize(n) { return n.count == null ? 2.2 : 2.4 + 1.7 * Math.log10(n.count + 1); } // 1 → 2.9, 100 → 5.8, 400 → 6.8 (dibatasi 20 px oleh shader)
   // daratan: dunia kisi 1,8° (world-atlas land-50m, tanpa kotak Indonesia) + tetangga dan Indonesia kisi 0,55° (land-10m, batas negara countries-50m); base36 (lat+90)*10,(lon+180)*10
   function decodeLL(str) { var out = [], i; for (i = 0; i + 6 <= str.length; i += 6) out.push(ll(parseInt(str.substr(i, 3), 36) / 10 - 90, parseInt(str.substr(i + 3, 3), 36) / 10 - 180)); return out; }
@@ -518,6 +575,48 @@
   var pulses = []; seed = 5; for (var pq = 0; pq < NPULSE; pq++) pulses.push({ e: Math.floor(rnd() * EDGES.length), ph: rnd(), sp: 0.10 + rnd() * 0.12 });
   var pulsePts = new THREE.Points(pulseGeo, pulseMat); pulsePts.renderOrder = 4; world.add(pulsePts);
 
+  // bola yang bisa disentuh: bola-bola kecil tak terlihat di tiap kota untuk raycast (hover, klik, sentuh)
+  var hitGroup = new THREE.Group(); world.add(hitGroup);
+  var hitMat = new THREE.MeshBasicMaterial({ visible: false });
+  NODES.forEach(function (n, k) { var m = new THREE.Mesh(new THREE.SphereGeometry(Math.max(0.6, nodeSize(n) * 0.14), 8, 6), hitMat); m.position.set(n.v[0] * R * 1.012, n.v[1] * R * 1.012, n.v[2] * R * 1.012); m.userData.k = k; hitGroup.add(m); });
+  var raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2(), pointerOn = false, pointerDirty = false, hoverK = -1, popK = -1, downAt = null;
+  var tipEl = document.getElementById('tip'), popEl = document.getElementById('pop');
+  function globeActive() { return cur > 0.6 && cur < 3.5; }
+  canvas.addEventListener('pointermove', function (e) { pointer.x = (e.clientX / window.innerWidth) * 2 - 1; pointer.y = -(e.clientY / window.innerHeight) * 2 + 1; pointerOn = true; pointerDirty = true; tipEl.style.left = e.clientX + 'px'; tipEl.style.top = e.clientY + 'px'; });
+  canvas.addEventListener('pointerleave', function () { pointerOn = false; hoverK = -1; tipEl.classList.remove('on'); canvas.classList.remove('hot'); });
+  canvas.addEventListener('pointerdown', function (e) { downAt = [e.clientX, e.clientY]; pointer.x = (e.clientX / window.innerWidth) * 2 - 1; pointer.y = -(e.clientY / window.innerHeight) * 2 + 1; pointerDirty = true; });
+  canvas.addEventListener('pointerup', function (e) { if (!downAt) return; var moved = Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]); downAt = null; if (moved > 8) return; pick(); var k = hoverK; if (k >= 0) openPop(k); else if (popK >= 0) closePop(); });
+  function pick() {
+    pointerDirty = false; var prev = hoverK; hoverK = -1;
+    if (!globeActive() || !sphere.visible) { tipEl.classList.remove('on'); canvas.classList.remove('hot'); return; }
+    raycaster.setFromCamera(pointer, camera);
+    var hits = raycaster.intersectObjects([sphere].concat(hitGroup.children), false);
+    if (hits.length && hits[0].object.userData.k !== undefined) hoverK = hits[0].object.userData.k;
+    canvas.classList.toggle('hot', hoverK >= 0);
+    if (hoverK >= 0 && pointerOn) { if (hoverK !== prev) { var n = NODES[hoverK]; tipEl.innerHTML = '<b>' + esc(n.name) + (n.phd ? ' · PhD' : (n.count != null ? ' · ' + fmt(n.count) + ' alumni' : '')) + '</b>Regional ' + esc(REG_SHORT[n.block]) + ' · ' + fmt(perRegNow[n.block]) + ' suara · klik untuk rincian'; } tipEl.classList.add('on'); }
+    else tipEl.classList.remove('on');
+  }
+  function regStats(b) {
+    var v = window.__view, dok = (v && v.dok) || [], tem = (v && v.tem) || [];
+    var tot = 0, unk = false; CITIES[b].forEach(function (c) { if (c[4] === 'phd') return; if (c[3] == null) unk = true; else tot += c[3]; });
+    var tema = {}; tem.forEach(function (t) { if (t.regional === REG[b]) { var k = (t.tema || '').trim(); if (k) tema[k] = (tema[k] || 0) + 1; } });
+    var top = Object.keys(tema).sort(function (x, y) { return tema[y] - tema[x]; }).slice(0, 3);
+    return { alumni: fmt(tot) + (unk ? '+' : ''), kota: CITIES[b].length, suara: v ? fmt(perRegNow[b]) : '—', temuan: v ? fmt(tem.filter(function (t) { return t.regional === REG[b]; }).length) : '—', top: top, lembar: dok.filter(function (d) { return d.regional === REG[b]; }).length };
+  }
+  function openPop(k) {
+    var n = NODES[k], b = n.block, st = regStats(b); popK = k;
+    $('#pop-h').textContent = REG_SHORT[b]; $('#pop-sub').textContent = n.name + (n.phd ? ' · lokasi studi doktoral alumni' : (n.count != null ? ' · ' + fmt(n.count) + ' alumni pernah kuliah di sini' : '')) + ' — ' + REG_DESC[b];
+    $('#pop-alumni').textContent = st.alumni; $('#pop-kota').textContent = st.kota; $('#pop-suara').textContent = st.suara; $('#pop-temuan').textContent = st.temuan;
+    $('#pop-tema').innerHTML = st.top.length ? 'Tema yang muncul: ' + st.top.map(function (t) { return '<b>' + esc(t) + '</b>'; }).join(', ') : (window.__view ? 'Belum ada suara dari regional ini. <b>Suara pertama bisa dari kamu.</b>' : '');
+    $('#pop-pilih').hidden = (selReg === b); popEl.hidden = false; requestAnimationFrame(function () { popEl.classList.add('on'); });
+    tipEl.classList.remove('on'); setTimeout(function () { if (popK >= 0) $('#pop-x').focus({ preventScroll: true }); }, 40);
+  }
+  function closePop() { popK = -1; popEl.classList.remove('on'); setTimeout(function () { if (popK < 0) popEl.hidden = true; }, 320); }
+  $('#pop-x').addEventListener('click', closePop);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && popK >= 0) { closePop(); } });
+  $('#pop-pilih').addEventListener('click', function () { if (popK >= 0) { pickRegional(NODES[popK].block, false); $('#pop-pilih').hidden = true; } });
+  function pickRegional(b, fromBars) { selReg = b; updateRegCard(); var k = -1; NODES.forEach(function (n, i) { if (k < 0 && n.block === b) k = i; }); if (fromBars && k >= 0) openPop(k); document.querySelectorAll('button.bar').forEach(function (x) { x.classList.toggle('on', +x.getAttribute('data-reg') === b); x.setAttribute('aria-pressed', String(+x.getAttribute('data-reg') === b)); }); }
+
   // kamera per tahap: [posisi, sasaran]; bola selalu di pusat dunia
   var ox = NARROW ? 0 : 8.5, oy = NARROW ? -16 : 0; // desktop: geser bola menjauh dari kolom teks; HP: bola di paruh atas
   function camFor(s) {
@@ -582,7 +681,7 @@
   function regCenter(b) { var x = 0, y = 0, z = 0; NODES.forEach(function (n) { if (n.block === b) { x += n.v[0]; y += n.v[1]; z += n.v[2]; } }); var m = Math.sqrt(x * x + y * y + z * z) || 1; return [x / m, y / m, z / m]; }
   function updateRegCard() {
     $('#reg-name').textContent = REG_SHORT[selReg]; $('#reg-desc').textContent = REG_DESC[selReg];
-    var tot = 0, unk = false; CITIES[selReg].forEach(function (c) { if (c[3] == null) unk = true; else tot += c[3]; });
+    var tot = 0, unk = false; CITIES[selReg].forEach(function (c) { if (c[4] === 'phd') return; if (c[3] == null) unk = true; else tot += c[3]; });
     $('#reg-cities').textContent = CITIES[selReg].map(function (c) { return c[0] + (c[3] == null ? '' : ' ' + fmt(c[3])); }).join(' · ');
     $('#reg-kota').textContent = CITIES[selReg].length; $('#reg-alumni').textContent = fmt(tot) + (unk ? '+' : ''); $('#reg-n').textContent = window.__view ? fmt(perRegNow[selReg]) : '—';
     document.querySelectorAll('.seat-pick button').forEach(function (b) { b.setAttribute('aria-pressed', String(+b.getAttribute('data-reg') === selReg)); });
@@ -590,9 +689,9 @@
     var c = regCenter(selReg); spinTarget = -Math.atan2(c[0], c[2]); // rotasi y sebesar -atan2(x, z) membawa vektor (x, z) ke sumbu +z; Luar negeri: pusatnya menyebar, jadi tetap hadapkan Indonesia
     if (selReg === 5) spinTarget = FACE_Y + 0.9;
   }
-  document.querySelectorAll('.seat-pick button').forEach(function (b) { b.addEventListener('click', function () { selReg = +b.getAttribute('data-reg'); updateRegCard(); }); });
+  document.querySelectorAll('.seat-pick button').forEach(function (b) { b.addEventListener('click', function () { pickRegional(+b.getAttribute('data-reg'), false); }); });
   updateRegCard();
-  window.__scene = { setData: setData }; if (window.__view) setData(window.__view);
+  window.__scene = { setData: setData, pickRegional: pickRegional }; if (window.__view) setData(window.__view);
 
   var W = 0, H = 0;
   function resize() {
@@ -629,7 +728,7 @@
   }
 
   var FACE = ll(-2.5, 118), FACE_Y = -Math.atan2(FACE[0], FACE[2]); // sudut putar yang membawa Indonesia ke depan
-  var last = performance.now(), rotY = FACE_Y, tilt = 0.14;
+  var last = performance.now(), rotY = FACE_Y, tilt = 0.14, swayT = 0;
   world.rotation.x = tilt;
   function frame_(now) {
     var dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now;
@@ -646,6 +745,7 @@
     // regional terpilih: simpulnya menyala ungu di tahap Terhubung
     var wSel = Math.max(0, 1 - Math.abs(cur - 2) / 0.9);
     if (wSel > 0) for (var k = 0; k < NNODE; k++) if (NODES[k].block === selReg) { var si = (I_NODE + k) * 3; col[si] += (COL.ungu[0] - col[si]) * wSel; col[si + 1] += (COL.ungu[1] - col[si + 1]) * wSel; col[si + 2] += (COL.ungu[2] - col[si + 2]) * wSel; siz[I_NODE + k] += 1.6 * wSel; }
+    if (hoverK >= 0 || popK >= 0) { [hoverK, popK].forEach(function (k) { if (k < 0) return; var hi = I_NODE + k, h3 = hi * 3; col[h3] += (COL.ungu[0] - col[h3]) * 0.85; col[h3 + 1] += (COL.ungu[1] - col[h3 + 1]) * 0.85; col[h3 + 2] += (COL.ungu[2] - col[h3 + 2]) * 0.85; siz[hi] = siz[hi] * 1.35 + 1.2; }); }
     var w3 = Math.max(0, 1 - Math.abs(cur - 3));
     if (w3 > 0 && !REDUCED) { var pu = 0.85 + 0.15 * Math.sin(driftT * 2.2); for (var q = 0; q < litNodes.length; q++) siz[litNodes[q]] *= pu; }
     geo.attributes.position.needsUpdate = true; geo.attributes.aCol.needsUpdate = true; geo.attributes.aSize.needsUpdate = true;
@@ -666,7 +766,8 @@
     else {
       world.rotation.x += (tilt - world.rotation.x) * 0.06;
       // bola tidak berputar penuh: Indonesia menghadap depan (dengan goyangan kecil), atau regional yang dipilih di tahap Terhubung/Suara
-      var want = (cur >= 1.5 && spinTarget !== null) ? spinTarget : FACE_Y + (REDUCED ? 0 : Math.sin(driftT * 0.25) * 0.28);
+      if (hoverK < 0 && popK < 0) swayT += dt; // bola diam saat kota disorot atau popover terbuka, supaya sasaran tidak lari
+      var want = (cur >= 1.5 && spinTarget !== null) ? spinTarget : FACE_Y + (REDUCED ? 0 : Math.sin(swayT * 0.25) * 0.28);
       var dlt = want - rotY; dlt = Math.atan2(Math.sin(dlt), Math.cos(dlt)); rotY += dlt * 0.045;
     }
     world.rotation.y = rotY;
@@ -676,8 +777,10 @@
     tmpA.set(ca[1][0], ca[1][1], ca[1][2]); tmpB.set(cb[1][0], cb[1][1], cb[1][2]); camTgt.lerpVectors(tmpA, tmpB, t);
     if (!REDUCED) { camPos.x += Math.sin(driftT * 0.25) * 0.4; camPos.y += Math.sin(driftT * 0.33) * 0.25; }
     camera.position.copy(camPos); camera.lookAt(camTgt);
-    // label kota
+    // label kota, tooltip, popover
     world.updateMatrixWorld();
+    if (pointerDirty) pick();
+    if (popK >= 0) { var pn = NODES[popK].v; tmpA.set(pn[0] * R * 1.03, pn[1] * R * 1.03, pn[2] * R * 1.03); world.localToWorld(tmpA); tmpB.copy(tmpA).sub(camera.position); var facingP = tmpB.dot(tmpA) < 0; tmpA.project(camera); var px = (tmpA.x * .5 + .5) * W, py = (-tmpA.y * .5 + .5) * H; px = Math.max(160, Math.min(W - 160, px)); var up = py > H * 0.5; popEl.classList.toggle('up', up); popEl.style.left = px + 'px'; popEl.style.top = (up ? Math.max(40, py - 10) : Math.min(H - 40, py + 10)) + 'px'; if (!facingP || !globeActive()) closePop(); }
     var showLbl = !NARROW && cur > 0.75 && cur < 2.6;
     for (var li = 0; li < cityLabels.length; li++) { var cl = cityLabels[li], nv = NODES[cl.k].v; placeLabel(cl.el, nv[0] * R * 1.02, nv[1] * R * 1.02, nv[2] * R * 1.02, showLbl, cl.dy); }
     var active = ONE ? idx : Math.round(cur); dock.forEach(function (d, i) { d.classList.toggle('on', i === active); });
