@@ -464,7 +464,7 @@
     [['Malang', -7.98, 112.63, 99], ['Surabaya', -7.3, 112.7, 98]],
     [['Toronto', 43.7, -79.4, 28], ['Vancouver', 49.3, -123.1, 17], ['Sydney', -33.9, 151.2, 16], ['Australia, kota lain', -27.0, 135.0, 14], ['Amerika Serikat', 39.5, -98.0, 10], ['Belanda', 52.2, 5.5, 8], ['Taiwan', 23.8, 121.0, 6], ['Tiongkok', 35.0, 105.0, 4],
      ['Hong Kong', 22.3, 114.2, null], ['Singapura', 1.35, 103.8, null], ['Malaysia', 3.1, 101.7, null], ['Inggris', 52.5, -1.5, null],
-     ['Wageningen', 51.97, 5.67, 1, 'phd'], ['Urbana-Champaign', 40.1, -88.2, 1, 'phd'], ['Lyngby', 55.78, 12.52, 1, 'phd'], ['Oxford', 51.75, -1.26, 1, 'phd'], ['Chicago', 41.87, -87.65, 1, 'phd'], ['Hsinchu', 24.8, 120.97, 1, 'phd'], ['Trondheim', 63.43, 10.4, 1, 'phd'], ['London', 51.5, -0.1, 1, 'phd']] // 'phd' = lokasi studi doktoral, tidak dijumlahkan ke total S1 luar negeri
+     ['Wageningen', 51.97, 5.67, 1, 'phd'], ['Urbana-Champaign', 40.1, -88.2, 1, 'phd'], ['Lyngby', 55.78, 12.52, 1, 'phd'], ['Oxford', 51.75, -1.26, 1, 'phd'], ['Chicago', 41.87, -87.65, 1, 'phd'], ['Hsinchu', 24.8, 120.97, 1, 'phd'], ['Trondheim', 63.43, 10.4, 1, 'phd'], ['London', 51.5, -0.1, 1, 'phd']] // 'phd' = lokasi studi doktoral (ikut dijumlahkan ke total regional luar negeri)
   ];
   var REG_DESC = ['Aceh, Sumut, Sumbar, Riau, Kepri', 'Sumsel, Lampung, Jambi, Bengkulu, Babel, dan Jabodetabek', 'Bandung dan Jatinangor — satu dari empat alumni kuliah di sini', 'Jawa Tengah dan D.I. Yogyakarta', 'Jawa Timur, Kalimantan, Bali, Nusa Tenggara, Sulawesi, Maluku, Papua', 'Kanada dan Australia terbanyak; delapan alumni di jalur PhD'];
   function ll(lat, lon) { var la = lat * Math.PI / 180, lo = lon * Math.PI / 180; return [Math.cos(la) * Math.cos(lo), Math.sin(la), -Math.cos(la) * Math.sin(lo)]; } // bujur timur ke arah -z: dilihat dari kamera (+z), timur berada di kanan, seperti peta biasa
@@ -593,19 +593,19 @@
     var hits = raycaster.intersectObjects([sphere].concat(hitGroup.children), false);
     if (hits.length && hits[0].object.userData.k !== undefined) hoverK = hits[0].object.userData.k;
     canvas.classList.toggle('hot', hoverK >= 0);
-    if (hoverK >= 0 && pointerOn) { if (hoverK !== prev) { var n = NODES[hoverK]; tipEl.innerHTML = '<b>' + esc(n.name) + (n.phd ? ' · PhD' : (n.count != null ? ' · ' + fmt(n.count) + ' alumni' : '')) + '</b>Regional ' + esc(REG_SHORT[n.block]) + ' · ' + fmt(perRegNow[n.block]) + ' suara · klik untuk rincian'; } tipEl.classList.add('on'); }
+    if (hoverK >= 0 && pointerOn) { if (hoverK !== prev) { var n = NODES[hoverK]; tipEl.innerHTML = '<b>' + esc(n.name) + (n.count != null ? ' · ' + fmt(n.count) + ' alumni' + (n.phd ? ' (S3)' : '') : '') + '</b>Regional ' + esc(REG_SHORT[n.block]) + ' · ' + fmt(perRegNow[n.block]) + ' suara · klik untuk rincian'; } tipEl.classList.add('on'); }
     else tipEl.classList.remove('on');
   }
   function regStats(b) {
     var v = window.__view, dok = (v && v.dok) || [], tem = (v && v.tem) || [];
-    var tot = 0, unk = false; CITIES[b].forEach(function (c) { if (c[4] === 'phd') return; if (c[3] == null) unk = true; else tot += c[3]; });
+    var tot = 0, unk = false; CITIES[b].forEach(function (c) { if (c[3] == null) unk = true; else tot += c[3]; }); // S1, S2, dan S3 dijumlahkan bersama
     var tema = {}; tem.forEach(function (t) { if (t.regional === REG[b]) { var k = (t.tema || '').trim(); if (k) tema[k] = (tema[k] || 0) + 1; } });
     var top = Object.keys(tema).sort(function (x, y) { return tema[y] - tema[x]; }).slice(0, 3);
     return { alumni: fmt(tot) + (unk ? '+' : ''), kota: CITIES[b].length, suara: v ? fmt(perRegNow[b]) : '—', temuan: v ? fmt(tem.filter(function (t) { return t.regional === REG[b]; }).length) : '—', top: top, lembar: dok.filter(function (d) { return d.regional === REG[b]; }).length };
   }
   function openPop(k) {
     var n = NODES[k], b = n.block, st = regStats(b); popK = k;
-    $('#pop-h').textContent = REG_SHORT[b]; $('#pop-sub').textContent = n.name + (n.phd ? ' · lokasi studi doktoral alumni' : (n.count != null ? ' · ' + fmt(n.count) + ' alumni pernah kuliah di sini' : '')) + ' — ' + REG_DESC[b];
+    $('#pop-h').textContent = REG_SHORT[b]; $('#pop-sub').textContent = n.name + (n.count != null ? ' · ' + fmt(n.count) + ' alumni pernah kuliah di sini' + (n.phd ? ' (S3)' : '') : '') + ' — ' + REG_DESC[b];
     $('#pop-alumni').textContent = st.alumni; $('#pop-kota').textContent = st.kota; $('#pop-suara').textContent = st.suara; $('#pop-temuan').textContent = st.temuan;
     $('#pop-tema').innerHTML = st.top.length ? 'Tema yang muncul: ' + st.top.map(function (t) { return '<b>' + esc(t) + '</b>'; }).join(', ') : (window.__view ? 'Belum ada suara dari regional ini. <b>Suara pertama bisa dari kamu.</b>' : '');
     $('#pop-pilih').hidden = (selReg === b); popEl.hidden = false; requestAnimationFrame(function () { popEl.classList.add('on'); });
@@ -681,7 +681,7 @@
   function regCenter(b) { var x = 0, y = 0, z = 0; NODES.forEach(function (n) { if (n.block === b) { x += n.v[0]; y += n.v[1]; z += n.v[2]; } }); var m = Math.sqrt(x * x + y * y + z * z) || 1; return [x / m, y / m, z / m]; }
   function updateRegCard() {
     $('#reg-name').textContent = REG_SHORT[selReg]; $('#reg-desc').textContent = REG_DESC[selReg];
-    var tot = 0, unk = false; CITIES[selReg].forEach(function (c) { if (c[4] === 'phd') return; if (c[3] == null) unk = true; else tot += c[3]; });
+    var tot = 0, unk = false; CITIES[selReg].forEach(function (c) { if (c[3] == null) unk = true; else tot += c[3]; }); // S1, S2, dan S3 dijumlahkan bersama
     $('#reg-cities').textContent = CITIES[selReg].map(function (c) { return c[0] + (c[3] == null ? '' : ' ' + fmt(c[3])); }).join(' · ');
     $('#reg-kota').textContent = CITIES[selReg].length; $('#reg-alumni').textContent = fmt(tot) + (unk ? '+' : ''); $('#reg-n').textContent = window.__view ? fmt(perRegNow[selReg]) : '—';
     document.querySelectorAll('.seat-pick button').forEach(function (b) { b.setAttribute('aria-pressed', String(+b.getAttribute('data-reg') === selReg)); });
