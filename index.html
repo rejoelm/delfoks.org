@@ -86,7 +86,6 @@
   .tile b{display:block;font-size:1.25rem;font-weight:700;letter-spacing:-0.01em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
   .tile small{display:block;color:var(--ink-3);font-size:12px;margin-top:2px}
   .seat-card{margin-top:16px;border-radius:12px;border:1px solid var(--hair);background:var(--paper);padding:14px 16px}
-  .seat-card .k{font-size:13px;color:var(--ungu);font-weight:600}
   .seat-card .n{font-size:1.35rem;font-weight:700;letter-spacing:-0.01em;margin-top:2px}
   .seat-card .d{font-size:14px;color:var(--ink-2)}
   .seat-card .tiles{margin-top:12px}
@@ -116,7 +115,6 @@
   .adart{padding:40px 20px 20px;background:var(--paper)}
   .adart .card{max-width:860px;margin:0 auto;padding:28px 30px;border-radius:14px;background:#fff;border:1px solid var(--hair);box-shadow:0 1px 2px rgba(22,33,58,.06),0 18px 40px -24px rgba(22,33,58,.25);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 32px;align-items:start}
   .adart h2{font-size:clamp(1.4rem,2.4vw,1.9rem);letter-spacing:-.01em;line-height:1.2}
-  .adart .k{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--biru-text);margin-bottom:8px}
   .adart .lead{margin-top:10px;font-size:1rem}
   .adart ol{margin:0;padding-left:22px;display:grid;gap:10px;font-size:15px;color:var(--ink-2)}
   .adart ol b{color:var(--ink)}
@@ -128,6 +126,31 @@
   footer .in{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 24px}
   footer a{color:var(--ink-2);display:inline-block;padding:3px 0}
 
+  /* ---- mode satu layar (desktop): panel bergantian lewat klik, tanpa scroll ---- */
+  .next{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:14px;font-weight:600;color:var(--biru-text);text-decoration:none;padding:6px 0;border-radius:6px}
+  .next svg{width:16px;height:16px;transition:translate 150ms ease-out}
+  @media (hover:hover){.next:hover svg{translate:3px 0}}
+  .next:focus-visible{outline:2px solid var(--biru);outline-offset:3px}
+  .hint{position:fixed;left:50%;bottom:max(62px,calc(env(safe-area-inset-bottom) + 62px));transform:translateX(-50%);z-index:9;font-size:12px;color:var(--ink-3);display:none}
+  html.one, html.one body{height:100%;overflow:hidden;overscroll-behavior:none}
+  html.one main{position:fixed;inset:0;z-index:1}
+  html.one .scene, html.one .tail{position:absolute;inset:0;min-height:0;padding:84px max(20px,env(safe-area-inset-right)) 76px max(20px,env(safe-area-inset-left));opacity:0;pointer-events:none;visibility:hidden;filter:blur(4px);translate:0 12px;transition:opacity 150ms ease-out,filter 150ms ease-out,translate 150ms ease-out,visibility 0s linear 150ms}
+  html.one .scene.on, html.one .tail.on{opacity:1;pointer-events:auto;visibility:visible;filter:blur(0);translate:0 0;transition:opacity 300ms ease-out,filter 300ms ease-out,translate 300ms ease-out,visibility 0s}
+  html.one .scene.off{translate:0 -12px}
+  @media (prefers-reduced-motion:reduce){html.one .scene, html.one .tail{filter:none;translate:0 0;transition:opacity 200ms ease-out,visibility 0s linear 200ms}html.one .scene.on, html.one .tail.on{transition:opacity 200ms ease-out,visibility 0s}}
+  html.one .copy{max-height:calc(100svh - 170px);overflow:auto;overscroll-behavior:contain}
+  html.one .tail{display:grid;align-content:center}
+  html.one .tail .in-tail{width:100%;max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+  html.one .coda{padding:0;background:none;text-align:left}
+  html.one .coda .in{margin:0;justify-items:start;gap:14px;padding:24px 26px;border-radius:14px;background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--hair);box-shadow:0 1px 2px rgba(22,33,58,.06),0 18px 40px -24px rgba(22,33,58,.25)}
+  html.one .coda p{text-align:left}
+  html.one .coda .cta{justify-content:flex-start}
+  html.one .adart{padding:0}
+  html.one .adart .card{margin:0;grid-template-columns:minmax(0,1fr);gap:16px}
+  html.one .tail footer{grid-column:1/-1;background:none;border-top:0;padding:8px 0 0;font-size:12.5px}
+  html.one .hint{display:block}
+  @media (max-height:760px){html.one .copy{padding:18px 20px}html.one .copy .lead{font-size:.95rem;margin-top:8px}html.one .seat-card{margin-top:10px;padding:12px 14px}html.one .next{margin-top:12px}html.one .scene{padding-top:72px;padding-bottom:70px}}
+  html.one .dock{bottom:max(18px,env(safe-area-inset-bottom))}
   @media (max-width:900px){
     .scene.left .in,.scene.right .in{grid-template-columns:minmax(0,1fr)}
     .scene.right .copy{grid-column:1}
@@ -155,8 +178,9 @@
 </header>
 <div class="badge" id="badge" role="status"><i></i><span>Memuat data…</span></div>
 <nav class="dock" aria-label="Bagian halaman">
-  <a href="#tersebar" class="on">Tersebar</a><a href="#dunia">Dunia</a><a href="#terhubung">Terhubung</a><a href="#suara">Suara</a><a href="#bentuk">Bentuk</a>
+  <a href="#tersebar" class="on">Tersebar</a><a href="#dunia">Dunia</a><a href="#terhubung">Terhubung</a><a href="#suara">Suara</a><a href="#bentuk">Bentuk</a><a href="#ikut">Ikut</a>
 </nav>
+<p class="hint" aria-hidden="true">Klik, tekan →, atau gulir sekali untuk lanjut</p>
 
 <main>
   <section class="scene hero left" id="tersebar">
@@ -173,6 +197,7 @@
           <div class="row"><span>Kampus tujuan · di luar negeri</span><b><span data-bind="petaKampus">—</span> · <span data-bind="petaLuar">—</span></b></div>
           <div class="row"><span>Suara alumni terkumpul</span><b data-bind="suara">—</b></div>
         </div>
+        <a class="next" href="#dunia">Mulai dari peta: di mana kita sekarang<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
     </div>
   </section>
@@ -187,6 +212,7 @@
           <span><i style="background:linear-gradient(90deg,#2f8adc,#9b6bce,#cf5971,#cb6620,#2e9e52,#009ca4);border-radius:3px;width:28px"></i>Kota kampus, satu warna per regional, ukuran = jumlah alumni</span>
         </div>
         <p class="note">Sumber: <span data-bind="petaSumber">—</span> (<span data-bind="petaTanggal">—</span>), data kampus tujuan sesaat setelah lulus SMA, bukan domisili kini. Titik tanpa angka: disebut dalam laporan tanpa jumlah. Indonesia ditandai biru tegas; di bagian berikutnya bola bisa diputar ke tiap regional.</p>
+        <a class="next" href="#terhubung">Lalu apa yang menghubungkan kita<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
     </div>
   </section>
@@ -197,8 +223,7 @@
         <h2>Yang menghubungkan kita bukan jarak, tapi obrolan.</h2>
         <p class="lead">Setiap garis adalah satu percakapan: Del Talks dua puluh menit antara dua alumni, tanpa nama dan tanpa formulir. Dari obrolan-obrolan kecil itulah kami belajar seperti apa Del Folks yang ingin kita bangun bersama.</p>
         <div class="seat-card">
-          <div class="k">Lihat dari regional</div>
-          <div class="n" id="reg-name">—</div>
+          <div class="n"><span style="font-weight:500;color:var(--ink-2)">Dilihat dari regional</span> <span id="reg-name">—</span></div>
           <div class="d" id="reg-desc">—</div>
           <div class="d" id="reg-cities" style="margin-top:6px"></div>
           <div class="tiles">
@@ -215,6 +240,7 @@
             <button type="button" data-reg="5" aria-pressed="false">Luar negeri</button>
           </div>
         </div>
+        <a class="next" href="#suara">Siapa yang sudah bersuara<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
     </div>
   </section>
@@ -231,7 +257,8 @@
         </div>
         <div class="bars" id="bars"></div>
         <div class="empty" id="empty" hidden>Belum ada kota yang menyala. Kota pertama bisa kotamu.</div>
-        <p class="note">Sumber: lembar temuan di folder studi, diproses tiap 15 menit. Diperbarui <span data-bind="asof">—</span>.</p>
+        <p class="note">Angkatanmu belum ada di sini? Itu bukan kekurangan data; itu undangan. Sumber: lembar temuan di folder studi, diproses tiap 15 menit. Diperbarui <span data-bind="asof">—</span>.</p>
+        <a class="next" href="#bentuk">Jadi, seperti apa bentuk Del Folks nanti<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
     </div>
   </section>
@@ -245,15 +272,28 @@
           <p class="note" style="margin-top:14px">Tema yang paling sering muncul sejauh ini</p>
           <div class="chips" id="tema"></div>
         </div>
+        <a class="next" href="#ikut">Giliranmu: ikut bersuara<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
     </div>
   </section>
 
+<div class="tail" id="tail">
+<div class="in-tail">
+  <section class="coda" id="ikut">
+    <div class="in">
+      <h2>Dua puluh menit yang menentukan bentuk Del Folks.</h2>
+      <p class="lead">Dua puluh menit ngobrol dengan teman seangkatan atau lintas angkatan. Tanpa nama. Tanpa formulir. Hasilnya dibagikan terbuka pada <b data-bind="publikasi">tanggal yang akan diumumkan</b>.</p>
+      <div class="cta">
+        <a class="btn" href="studi.html#ikut">Cara ikut bersuara<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn ghost" href="studi.html">Baca tentang studi</a>
+      </div>
+      <p class="note wa" id="wa-note" hidden>Tertarik ikut terlibat dalam studi ini? Hubungi narahubung <b id="wa-nama">Rejoel Siagian (Angkatan IV, Dexamenus)</b> <a id="wa-link" href="#" target="_blank" rel="noopener">lewat WhatsApp</a></p>
+    </div>
+  </section>
   <section class="adart" id="adart" aria-labelledby="adart-h">
     <div class="card">
       <div>
-        <div class="k">Draft AD/ART</div>
-        <h2 id="adart-h">Baca aturan mainnya, lalu beri komentar langsung di dokumennya.</h2>
+        <h2 id="adart-h">Draft AD/ART-nya sudah ada. Yang belum ada: komentarmu.</h2>
         <p class="lead">Draft Anggaran Dasar dan Anggaran Rumah Tangga Del Folks terbuka untuk dikomentari alumni. Sorot kalimat yang ingin kamu tanggapi dan tulis komentarmu; semua masukan dibahas sebelum Musyawarah Anggota.</p>
         <div class="cta">
           <a class="btn" id="adart-link" href="#" target="_blank" rel="noopener">Buka draft dan minta akses komentar<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -268,18 +308,8 @@
     </div>
   </section>
 
-  <section class="coda" id="ikut">
-    <div class="in">
-      <h2>Ikut bersuara.</h2>
-      <p class="lead">Dua puluh menit ngobrol dengan teman seangkatan atau lintas angkatan. Tanpa nama. Tanpa formulir. Hasilnya dibagikan terbuka pada <b data-bind="publikasi">tanggal yang akan diumumkan</b>.</p>
-      <div class="cta">
-        <a class="btn" href="studi.html#ikut">Cara ikut bersuara<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <a class="btn ghost" href="studi.html">Baca tentang studi</a>
-      </div>
-      <p class="note wa" id="wa-note" hidden>Tertarik ikut terlibat dalam studi ini? Hubungi narahubung <b id="wa-nama">Rejoel Siagian (Angkatan IV, Dexamenus)</b> <a id="wa-link" href="#" target="_blank" rel="noopener">lewat WhatsApp</a></p>
-    </div>
-  </section>
-</main>
+
+
 <footer><div class="in">
   <span>Del Folks · Alumni SMA Unggul Del, Laguboti</span>
   <a href="studi.html">Tentang studi</a>
@@ -287,8 +317,11 @@
   <a href="#adart">Draft AD/ART</a>
   <a id="wa-foot" href="#" hidden target="_blank" rel="noopener">Narahubung: Rejoel Siagian (WhatsApp)</a>
 </div></footer>
+</div>
+</div>
+</main>
 
-<script id="site-data" type="application/json">{"schema":"delfolks-landing-1","diperbarui":"2026-11-18T00:20:00+07:00","config":{"tanggalPublikasi":"","target":{"Wawancara":12,"Del Talks":40,"FGD":6,"Voice note":30}},"dokumen":[],"temuan":[],"peta":{"sumber":"Peta Alumni SMA Unggul Del 2015–2026","tanggal":"2026-11-13","alumni":1549,"kampus":75,"luarNegeri":110,"phd":8,"kuliah":1450}}</script>
+<script id="site-data" type="application/json">{"schema":"delfolks-landing-1","diperbarui":"2026-11-24T12:00:00+07:00","config":{"tanggalPublikasi":"","target":{"Wawancara":12,"Del Talks":40,"FGD":6,"Voice note":30}},"dokumen":[{"kode":"M-2017-2019-R1-001","jenis":"Wawancara","tanggal":"","angkatan":"2017-2019","regional":"Sumut","keterlibatan":"","sikap_awal":"","perasaan":"","harus_diubah":"","kesediaan":"anggota saja","struktur":"tidak tahu","iuran":"tidak tahu"},{"kode":"M-2017-2019-R2-002","jenis":"Wawancara","tanggal":"","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","sikap_awal":"","perasaan":"","harus_diubah":"","kesediaan":"anggota saja","struktur":"cocok dengan catatan","iuran":"setuju wajib"},{"kode":"M-2017-2019-R2-003","jenis":"Wawancara","tanggal":"","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","sikap_awal":"","perasaan":"","harus_diubah":"","kesediaan":"anggota saja","struktur":"cocok dengan catatan","iuran":"tidak tahu"},{"kode":"M-2017-2019-R2-004","jenis":"Wawancara","tanggal":"","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","sikap_awal":"","perasaan":"","harus_diubah":"","kesediaan":"anggota saja","struktur":"cocok dengan catatan","iuran":"setuju bersyarat"}],"temuan":[{"id":"M-2017-2019-R1-001-01","kode":"M-2017-2019-R1-001","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumut","keterlibatan":"","rq":"RQ1","tema":"Wadah bertemu, alumni kompak","kutipan":"Wadah untuk ketemu alumni satu dengan yang lain, kompak.","makna":"","kode_induk":"MAKNA: ikatan emosional"},{"id":"M-2017-2019-R1-001-02","kode":"M-2017-2019-R1-001","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumut","keterlibatan":"","rq":"RQ2","tema":"Belum ada wadah, terbiasa sendiri","kutipan":"Belum ada wadahnya dan terbiasa sendiri; saat sekolah ada anak emas.","makna":"","kode_induk":"BARU: belum ada wadah"},{"id":"M-2017-2019-R1-001-03","kode":"M-2017-2019-R1-001","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumut","keterlibatan":"","rq":"RQ3","tema":"Pertemuan di pusat dan regional, tidak Jakarta-sentris","kutipan":"Ada wadah untuk ketemu baik di pusat maupun di regional; harapannya suara alumni tidak hanya berpusat di Jakarta saja.","makna":"","kode_induk":"REGIONAL: kebutuhan khas"},{"id":"M-2017-2019-R1-001-04","kode":"M-2017-2019-R1-001","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumut","keterlibatan":"","rq":"RQ4","tema":"Ikuti AD/ART yang disepakati","kutipan":"Baiknya sesuai AD/ART nanti.","makna":"","kode_induk":"STRUKTUR: setuju dengan catatan"},{"id":"M-2017-2019-R1-001-05","kode":"M-2017-2019-R1-001","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumut","keterlibatan":"","rq":"RQ5","tema":"Transparan dan akuntabel","kutipan":"Transparan, akuntabel, dan bisa dipertanggungjawabkan.","makna":"","kode_induk":"KEPERCAYAAN: transparansi keuangan"},{"id":"M-2017-2019-R1-001-06","kode":"M-2017-2019-R1-001","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumut","keterlibatan":"","rq":"RQ6","tema":"Anggota biasa","kutipan":"Sebagai anggota biasa saja.","makna":"","kode_induk":"KESEDIAAN: peran diminati"},{"id":"M-2017-2019-R2-002-01","kode":"M-2017-2019-R2-002","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ1","tema":"Wadah tukar informasi dan talent pool","kutipan":"Wadah untuk ketemu alumni satu dengan yang lain; bisa jadi wadah untuk saling tukar informasi dan talent pool untuk kerja sama maupun dalam karier profesional.","makna":"","kode_induk":"HARAPAN: jaringan karier"},{"id":"M-2017-2019-R2-002-02","kode":"M-2017-2019-R2-002","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ2","tema":"Ada yang didiskreditkan semasa sekolah","kutipan":"Belum ada wadahnya dan terbiasa sendiri; saat sekolah ada anak emas, beberapa orang didiskreditkan atau tidak dianggap.","makna":"","kode_induk":"HAMBATAN: pengalaman buruk"},{"id":"M-2017-2019-R2-002-03","kode":"M-2017-2019-R2-002","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ3","tema":"Peresmian badan hukum lewat AD/ART","kutipan":"Peresmian badan hukum Del Folks lewat AD/ART.","makna":"","kode_induk":"BARU: badan hukum"},{"id":"M-2017-2019-R2-002-04","kode":"M-2017-2019-R2-002","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ3","tema":"Program hobi: musik dan olahraga","kutipan":"Ada program yang menampung hobi seperti musik sehingga bisa ada penampilan atau show yang bisa diikuti bersama, selain olahraga tentunya.","makna":"","kode_induk":"HARAPAN: sosial/reuni"},{"id":"M-2017-2019-R2-002-05","kode":"M-2017-2019-R2-002","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ4","tema":"Ikuti AD/ART; iuran tidak masalah","kutipan":"Sesuai AD/ART; iuran tidak ada masalah.","makna":"","kode_induk":"IURAN: setuju wajib"},{"id":"M-2017-2019-R2-002-06","kode":"M-2017-2019-R2-002","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ5","tema":"Laporan jelas bila ada iuran","kutipan":"Ada laporan yang jelas, terutama bila ada iuran.","makna":"","kode_induk":"KEPERCAYAAN: transparansi keuangan"},{"id":"M-2017-2019-R2-002-07","kode":"M-2017-2019-R2-002","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ6","tema":"Anggota; bantu proyek bersama, dukung pengurus","kutipan":"Sebagai anggota saja; membantu bila ada proyek ataupun pekerjaan yang bisa dikerjakan bersama; mendukung pengurus Del Folks kelak.","makna":"","kode_induk":"KESEDIAAN: peran diminati"},{"id":"M-2017-2019-R2-003-01","kode":"M-2017-2019-R2-003","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ1","tema":"Badan hukum agar bergerak resmi","kutipan":"Terdapat badan hukum agar bisa bergerak secara resmi.","makna":"","kode_induk":"BARU: badan hukum"},{"id":"M-2017-2019-R2-003-02","kode":"M-2017-2019-R2-003","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ2","tema":"Kebencian pada sekolah, enggan berkumpul","kutipan":"Mayoritas masih ada kebencian terhadap sekolah, sehingga untuk berkumpul dengan alumni masih enggan.","makna":"","kode_induk":"HAMBATAN: pengalaman buruk"},{"id":"M-2017-2019-R2-003-03","kode":"M-2017-2019-R2-003","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ3","tema":"Musyawarah nasional sahkan AD/ART","kutipan":"Musyawarah nasional untuk meresmikan AD/ART; AD/ART bisa melihat AD/ART Kadin.","makna":"","kode_induk":"BARU: badan hukum"},{"id":"M-2017-2019-R2-003-04","kode":"M-2017-2019-R2-003","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ4","tema":"Ketua dan pengurus inti, pemilihan sesuai AD/ART","kutipan":"Ada ketua, pengurus inti; pemilihan ketua sesuai dengan AD/ART.","makna":"","kode_induk":"STRUKTUR: mulai kecil"},{"id":"M-2017-2019-R2-003-05","kode":"M-2017-2019-R2-003","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ5","tema":"Pelaporan jelas, akuntabel, transparan","kutipan":"Ada pelaporan yang jelas, akuntabel, dan transparan.","makna":"","kode_induk":"KEPERCAYAAN: transparansi keuangan"},{"id":"M-2017-2019-R2-003-06","kode":"M-2017-2019-R2-003","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ6","tema":"Anggota; bantu AD/ART di belakang layar","kutipan":"Anggota saja; ingin terlibat untuk membuat AD/ART dan membantu sesuai kemampuan. Syarat: tidak suka tampil di depan umum, cukup membantu di belakang layar.","makna":"","kode_induk":"KESEDIAAN: syarat"},{"id":"M-2017-2019-R2-004-01","kode":"M-2017-2019-R2-004","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ1","tema":"Saling kenal, saling bantu, tumbuh bersama","kutipan":"Wadah dan platform untuk bisa kompak, saling bantu, dan tumbuh bersama; harapannya bisa saling kenal dan saling bantu satu dengan yang lain.","makna":"","kode_induk":"MAKNA: ikatan emosional"},{"id":"M-2017-2019-R2-004-02","kode":"M-2017-2019-R2-004","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ2","tema":"Iklim kompetisi, manfaat kebersamaan belum terbukti","kutipan":"Terbiasa sejak sekolah untuk sendiri-sendiri, seperti sedang berkompetisi; belum ada kesempatan yang menunjukkan hasilnya bila bersama-sama atau kompak.","makna":"","kode_induk":"HAMBATAN: tidak lihat manfaat"},{"id":"M-2017-2019-R2-004-03","kode":"M-2017-2019-R2-004","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ3","tema":"Rumah alumni / sekretariat","kutipan":"Rumah alumni atau sekretariat Del Folks, tempat orang bisa bertemu rekan-rekan alumni yang lain.","makna":"","kode_induk":"HARAPAN: sosial/reuni"},{"id":"M-2017-2019-R2-004-04","kode":"M-2017-2019-R2-004","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ4","tema":"Ketua, sekretaris, bendahara, perwakilan regional","kutipan":"Baiknya ada ketua, sekretaris, bendahara, dan perwakilan regional.","makna":"","kode_induk":"STRUKTUR: mulai kecil"},{"id":"M-2017-2019-R2-004-05","kode":"M-2017-2019-R2-004","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ4","tema":"Iuran Rp15.000/bulan untuk acara dan suka-duka","kutipan":"Iuran setuju, bisa mulai dari Rp15.000/bulan setara ngopi; dipakai untuk acara alumni, sumbangsih sukacita maupun dukacita, serta program lain.","makna":"","kode_induk":"IURAN: setuju bersyarat"},{"id":"M-2017-2019-R2-004-06","kode":"M-2017-2019-R2-004","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ5","tema":"Laporan keuangan, progres, program kerja, gap","kutipan":"Terdapat laporan keuangan, laporan progres, rencana program kerja, serta gap yang masih ada.","makna":"","kode_induk":"KEPERCAYAAN: transparansi keuangan"},{"id":"M-2017-2019-R2-004-07","kode":"M-2017-2019-R2-004","jenis":"Wawancara","angkatan":"2017-2019","regional":"Sumsel-Jabodetabek","keterlibatan":"","rq":"RQ6","tema":"Anggota; bersedia jadi mentor","kutipan":"Menjadi anggota biasa dan mau menjadi mentor bagi rekan alumni yang membutuhkan sharing skill dan keterampilan. Syarat: ada waktu yang cocok, dengan rekan yang kepribadiannya cocok.","makna":"","kode_induk":"KESEDIAAN: syarat"}],"peta":{"sumber":"Peta Alumni SMA Unggul Del 2015–2026","tanggal":"2026-11-13","alumni":1549,"kampus":75,"luarNegeri":110,"phd":8,"kuliah":1450}}</script>
 <script src="assets/config.js"></script>
 <script src="assets/three.min.js"></script>
 <script>
@@ -499,7 +532,9 @@
   }
 
   var sections = ['tersebar', 'dunia', 'terhubung', 'suara', 'bentuk'].map(function (id) { return document.getElementById(id); });
-  var target = 0, cur = 0;
+  var panels = sections.concat([document.getElementById('tail')]); // panel ke-6: ajakan ikut + AD/ART
+  var ONE = !NARROW && !document.documentElement.classList.contains('no-one'); // desktop: satu layar, berpindah lewat klik
+  var target = 0, cur = 0, idx = 0;
   function stageFromScroll() {
     var mid = window.innerHeight * 0.5;
     var centers = sections.map(function (el) { var r = el.getBoundingClientRect(); return r.top + r.height / 2; });
@@ -565,8 +600,33 @@
     mat.uniforms.uScale.value = H * (NARROW ? 0.22 : 0.2) * Math.min(window.devicePixelRatio || 1, NARROW ? 1.5 : 2);
   }
   var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 140); }); resize();
-  window.addEventListener('scroll', function () { target = stageFromScroll(); }, { passive: true }); target = stageFromScroll(); cur = target;
   var dock = document.querySelectorAll('.dock a');
+  var HASH = ['tersebar', 'dunia', 'terhubung', 'suara', 'bentuk', 'ikut'];
+  function hashToIdx(h) { h = (h || '').replace('#', ''); if (h === 'adart' || h === 'tail') return 5; var i = HASH.indexOf(h); return i < 0 ? 0 : i; }
+  function go(i, opts) {
+    i = Math.max(0, Math.min(panels.length - 1, i)); opts = opts || {};
+    if (!ONE) { var el = i === 5 ? document.getElementById('ikut') : panels[i]; if (el) el.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' }); return; }
+    var prev = idx; idx = i; target = Math.min(STAGES - 1, i);
+    panels.forEach(function (p, k) { p.classList.toggle('on', k === i); p.classList.toggle('off', k === prev && k !== i); p.setAttribute('aria-hidden', k === i ? 'false' : 'true'); if (k === i) p.removeAttribute('inert'); else p.setAttribute('inert', ''); });
+    if (history.replaceState) history.replaceState(null, '', '#' + HASH[i]);
+    if (!opts.silent) { var h = panels[i].querySelector('h1, h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
+    document.querySelector('.hint').hidden = i > 0;
+  }
+  if (ONE) {
+    document.documentElement.classList.add('one');
+    // tautan ke #bagian (dock, tombol "lanjut", footer, nav) → ganti panel
+    document.addEventListener('click', function (e) { var a = e.target.closest('a[href^="#"]'); if (!a) return; var h = a.getAttribute('href'); if (h.length < 2) return; e.preventDefault(); go(hashToIdx(h)); });
+    document.addEventListener('keydown', function (e) { if (e.altKey || e.ctrlKey || e.metaKey) return; var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return; var k = e.key;
+      if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ') { e.preventDefault(); go(idx + 1); } else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); go(idx - 1); } else if (k === 'Home') { e.preventDefault(); go(0); } else if (k === 'End') { e.preventDefault(); go(panels.length - 1); } });
+    // roda mouse/trackpad: satu dorongan = satu panel; ditahan 900 ms supaya trackpad tidak melompat-lompat
+    var acc = 0, lastWheel = 0;
+    window.addEventListener('wheel', function (e) { var box = e.target.closest && e.target.closest('.copy'); if (box && box.scrollHeight > box.clientHeight + 4) { var top = box.scrollTop <= 0 && e.deltaY < 0, bot = box.scrollTop + box.clientHeight >= box.scrollHeight - 1 && e.deltaY > 0; if (!top && !bot) return; } e.preventDefault(); var now = Date.now(); if (now - lastWheel > 900) acc = 0; acc += e.deltaY; if (Math.abs(acc) > 60 && now - lastWheel > 900) { lastWheel = now; go(idx + (acc > 0 ? 1 : -1)); acc = 0; } }, { passive: false });
+    window.addEventListener('hashchange', function () { go(hashToIdx(location.hash), { silent: true }); });
+    go(hashToIdx(location.hash), { silent: true }); cur = target;
+  } else {
+    window.addEventListener('scroll', function () { target = stageFromScroll(); }, { passive: true }); target = stageFromScroll(); cur = target;
+    if (location.hash === '#adart' || location.hash === '#ikut') { var el0 = document.querySelector(location.hash); if (el0) setTimeout(function () { el0.scrollIntoView(); }, 50); }
+  }
 
   var FACE = ll(-2.5, 118), FACE_Y = -Math.atan2(FACE[0], FACE[2]); // sudut putar yang membawa Indonesia ke depan
   var last = performance.now(), rotY = FACE_Y, tilt = 0.14;
@@ -589,6 +649,7 @@
     var w3 = Math.max(0, 1 - Math.abs(cur - 3));
     if (w3 > 0 && !REDUCED) { var pu = 0.85 + 0.15 * Math.sin(driftT * 2.2); for (var q = 0; q < litNodes.length; q++) siz[litNodes[q]] *= pu; }
     geo.attributes.position.needsUpdate = true; geo.attributes.aCol.needsUpdate = true; geo.attributes.aSize.needsUpdate = true;
+    mat.uniforms.uAlpha.value += (((ONE && idx === 5) ? 0.28 : 1) - mat.uniforms.uAlpha.value) * 0.08; // di panel ajakan, lambang jadi latar yang tenang
 
     // bola, cincin, busur, denyut: tampak hanya saat ada bola (tahap 1–3)
     var wGlobe = Math.min(1, Math.max(0, cur - 0.35) / 0.65) * Math.min(1, Math.max(0, 3.75 - cur) / 0.45);
@@ -597,7 +658,7 @@
     var wArc = Math.max(0, 1 - Math.abs(cur - 2) / 1.05);
     arcMat.opacity = (0.55 * wArc + 0.12 * w3) * wGlobe; pulseMat.opacity = 0.95 * wArc;
     if (wArc > 0.01 && !REDUCED) {
-      for (var p = 0; p < NPULSE; p++) { var pl = pulses[p], pts = arcPts[pl.e], kk = (driftT * pl.sp + pl.ph) % 1, idx = Math.min(SEG, Math.floor(kk * SEG)), pt = pts[idx]; pulsePos[p * 3] = pt[0]; pulsePos[p * 3 + 1] = pt[1]; pulsePos[p * 3 + 2] = pt[2]; }
+      for (var p = 0; p < NPULSE; p++) { var pl = pulses[p], pts = arcPts[pl.e], kk = (driftT * pl.sp + pl.ph) % 1, pIdx = Math.min(SEG, Math.floor(kk * SEG)), pt = pts[pIdx]; pulsePos[p * 3] = pt[0]; pulsePos[p * 3 + 1] = pt[1]; pulsePos[p * 3 + 2] = pt[2]; }
       pulseGeo.attributes.position.needsUpdate = true;
     }
     // putaran bola: pelan terus; saat regional dipilih, bola berputar ke arahnya; saat menjadi lambang, kembali ke sudut nol
@@ -619,7 +680,7 @@
     world.updateMatrixWorld();
     var showLbl = !NARROW && cur > 0.75 && cur < 2.6;
     for (var li = 0; li < cityLabels.length; li++) { var cl = cityLabels[li], nv = NODES[cl.k].v; placeLabel(cl.el, nv[0] * R * 1.02, nv[1] * R * 1.02, nv[2] * R * 1.02, showLbl, cl.dy); }
-    var active = Math.round(cur); dock.forEach(function (d, i) { d.classList.toggle('on', i === active); });
+    var active = ONE ? idx : Math.round(cur); dock.forEach(function (d, i) { d.classList.toggle('on', i === active); });
     renderer.render(scene, camera);
     requestAnimationFrame(frame_);
   }
