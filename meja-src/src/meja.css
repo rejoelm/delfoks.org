@@ -1,28 +1,42 @@
-.meja{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:#10253b}
+/* Meja Rapat — satu kolom, urutan DOM = urutan penting: status & aksi → kartu terpilih (menempel) → kanvas → legenda → teks usulan */
+.meja{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:#10253b;display:grid;gap:16px}
+.meja p{margin:0}
 .meja .muted{color:#637386}.meja .small{font-size:12.5px}
-.meja-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:10px 0 14px;border-bottom:1px solid #d8e1ea;margin-bottom:14px;font-size:14.5px}
-.meja-acts{display:flex;gap:8px}
+
+.meja-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding-block-end:14px;border-block-end:1px solid #d8e1ea;font-size:14.5px}
+.meja-status{flex:1 1 240px;min-width:0}
+.meja-acts{display:flex;flex-wrap:wrap;gap:12px}
 .meja button{font:inherit;font-size:14px;font-weight:600;border-radius:9px;padding:9px 14px;cursor:pointer;border:1px solid transparent;transition:background-color 150ms cubic-bezier(.2,0,0,1),scale 150ms ease-out}
 .meja button:not(:disabled):active{scale:.96}
 .meja button.primary{background:#005ca3;color:#fff}.meja button.primary:disabled{background:#c1ccd9;cursor:default}
-@media (hover:hover){.meja button.primary:not(:disabled):hover{background:#004b88}.meja button.ghost:not(:disabled):hover{background:#dff1ff}}
 .meja button.ghost{background:transparent;color:#005ca3;border-color:#637386}.meja button.ghost:disabled{opacity:.5;cursor:default}
 .meja button.small{padding:5px 10px;font-size:12.5px}
-.meja-err{background:#f3e5fd;border-left:3px solid #712a94;padding:10px 12px;border-radius:0 8px 8px 0;font-size:14px}
-.meja-grid{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
-@media (min-width:1500px){.meja-grid{grid-template-columns:minmax(0,1fr) 300px;gap:20px}.meja-side{order:0}}
-.meja-canvas{overflow-x:auto;overscroll-behavior-x:contain;border-radius:14px;background:#fff;border:1px solid #d8e1ea;padding:6px}
+@media (hover:hover){.meja button.primary:not(:disabled):hover{background:#004b88}.meja button.ghost:not(:disabled):hover{background:#dff1ff}}
+
+.meja-err{background:#f3e5fd;border-inline-start:3px solid #712a94;padding:10px 12px;border-radius:0 8px 8px 0;font-size:14px}
+
+/* kartu terpilih: menempel di bawah topbar (60px) supaya kutipan dan tombol "Taruh di" selalu terjangkau saat kanvas panjang */
+.meja-sel{position:sticky;top:64px;z-index:3;background:#fff;border:1px solid #d8e1ea;border-radius:12px;padding:12px 16px;font-size:14px;box-shadow:0 1px 2px rgba(16,37,59,.06),0 10px 24px -18px rgba(16,37,59,.35)}
+.meja-sel-in{display:grid;gap:10px}
+.meja-sel-meta{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#637386}
+.meja-sel-meta .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.meja-quote{font-size:16px;line-height:1.45;margin-block-start:4px;text-wrap:pretty;max-width:70ch}
+.meja-taruh{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.meja button.chip{padding:5px 11px;font-size:12.5px;font-weight:600;border-radius:999px;background:#f7fafe;color:#3b4f65;border-color:#c1ccd9}
+.meja button.chip.on{background:#005ca3;color:#fff;border-color:#005ca3}
+@media (hover:hover){.meja button.chip:not(.on):hover{background:#dff1ff;color:#005ca3}}
+@media (min-width:900px){.meja-sel-in{grid-template-columns:minmax(0,1fr) auto;align-items:start}.meja-taruh{max-width:360px;justify-content:flex-end}}
+
+/* kanvas: SVG selebar tata letaknya, diperkecil (transform) sampai muat di wadah; tinggi wadah diatur dari skrip */
+.meja-canvas{border-radius:14px;background:#fff;border:1px solid #d8e1ea;overflow:hidden;min-width:0}
 .meja-canvas svg{display:block;touch-action:none}
-.meja-side{display:grid;gap:12px;position:sticky;top:66px;z-index:2;order:-1;background:rgba(247,250,254,.92);backdrop-filter:blur(10px);padding:6px 0}
-@media (min-width:1500px){.meja-side{background:none;backdrop-filter:none;padding:0;top:76px}}
-@media (max-width:1499px){.meja-side{grid-template-columns:minmax(0,1fr) auto;align-items:center}.meja-side .meja-out{grid-column:1/-1}}
-.meja-sel{background:#fff;border:1px solid #d8e1ea;border-radius:12px;padding:14px 16px;font-size:14px}
-.meja-sel-h{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#637386}
-.meja-sel-h .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-.meja-quote{font-size:16px;line-height:1.45;margin:8px 0 6px;text-wrap:pretty}
-.meja-legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:#3b4f65}
-.meja-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
-.meja-out{background:#fff;border:1px solid #d8e1ea;border-radius:12px;padding:12px 14px}
-.meja-out-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.meja-out textarea{width:100%;box-sizing:border-box;font:12.5px/1.45 ui-monospace,Menlo,monospace;border:1px solid #d8e1ea;border-radius:8px;padding:8px;resize:vertical;color:#10253b}
-@media (max-width:980px){.meja-side{position:static;grid-template-columns:1fr}}
+.meja-canvas .meja-card{cursor:grab;outline:none}
+.meja-canvas .meja-card:focus-visible .meja-card-bg{stroke:#005ca3;stroke-width:3}
+
+.meja-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#3b4f65}
+.meja-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px;vertical-align:-1px}
+
+.meja-out{background:#fff;border:1px solid #d8e1ea;border-radius:12px;padding:14px 16px;display:grid;gap:10px}
+.meja-out-h{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.meja-out h2{font-size:16px;margin:0}
+.meja-out textarea{width:100%;box-sizing:border-box;font:12.5px/1.45 ui-monospace,Menlo,monospace;border:1px solid #d8e1ea;border-radius:8px;padding:8px;resize:vertical;color:#10253b;min-height:120px}
