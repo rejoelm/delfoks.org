@@ -137,7 +137,9 @@
   #gl{pointer-events:auto}
   .scene, .tail{pointer-events:none}
   .scene .copy, .tail .in-tail, .dock, .topbar, .badge, .hint{pointer-events:auto}
+  #gl.can-grab{cursor:grab;touch-action:pan-y}
   #gl.hot{cursor:pointer}
+  #gl.grab{cursor:grabbing}
   .tip{position:fixed;z-index:12;pointer-events:none;translate:-50% calc(-100% - 14px);background:var(--ink);color:#fff;font-size:12.5px;line-height:1.35;padding:7px 10px;border-radius:8px;box-shadow:0 6px 18px -8px rgba(16,37,59,.5);opacity:0;transition:opacity 150ms ease-out;white-space:nowrap;max-width:min(320px,90vw)}
   .tip.on{opacity:1}
   .tip b{display:block;font-size:13px}
@@ -251,7 +253,7 @@
 <nav class="dock" aria-label="Bagian halaman">
   <a href="#tersebar" class="on">Tersebar</a><a href="#dunia">Dunia</a><a href="#terhubung">Terhubung</a><a href="#suara">Suara</a><a href="#bentuk">Bentuk</a><a href="#ikut">Ikut</a>
 </nav>
-<p class="hint" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l5 5 5-5"/></svg>Gulir untuk lanjut · klik kota di bola untuk rinciannya</p>
+<p class="hint" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l5 5 5-5"/></svg>Gulir untuk lanjut · seret bola untuk memutar · klik kota untuk rinciannya</p>
 
 <main>
   <section class="scene hero left" id="tersebar">
@@ -281,7 +283,7 @@
           <span><i style="background:#2a6fb5"></i>Indonesia &nbsp;<i style="background:#aabfd4"></i>Daratan lain</span>
           <span><i style="background:linear-gradient(90deg,#2f8adc,#9b6bce,#cf5971,#cb6620,#2e9e52,#009ca4);border-radius:3px;width:28px"></i>Kota kampus, satu warna per regional, ukuran = jumlah alumni</span>
         </div>
-        <p class="note">Sumber: <span data-bind="petaSumber">—</span> (<span data-bind="petaTanggal">—</span>), data kampus tujuan sesaat setelah lulus SMA, bukan domisili kini. Titik tanpa angka: disebut dalam laporan tanpa jumlah. Indonesia ditandai biru tegas; di bagian berikutnya bola bisa diputar ke tiap regional.</p>
+        <p class="note">Sumber: <span data-bind="petaSumber">—</span> (<span data-bind="petaTanggal">—</span>), data kampus tujuan sesaat setelah lulus SMA, bukan domisili kini. Titik tanpa angka: disebut dalam laporan tanpa jumlah. Indonesia ditandai biru tegas; seret bola untuk memutarnya; di bagian berikutnya bola berputar sendiri ke tiap regional.</p>
       </div>
     </div>
   </section>
@@ -591,14 +593,20 @@
   var hitMat = new THREE.MeshBasicMaterial({ visible: false });
   NODES.forEach(function (n, k) { var m = new THREE.Mesh(new THREE.SphereGeometry(Math.max(0.6, nodeSize(n) * 0.14), 8, 6), hitMat); m.position.set(n.v[0] * R * 1.012, n.v[1] * R * 1.012, n.v[2] * R * 1.012); m.userData.k = k; hitGroup.add(m); });
   var raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2(), pointerOn = false, pointerDirty = false, hoverK = -1, popK = -1, downAt = null;
+  // seret bola: putaran tambahan dari pengguna (yaw/tilt) di atas arah dasar; ada sisa gerak (inersia) setelah dilepas
+  var drag = null, userY = 0, userX = 0, velY = 0, velX = 0, dragDX = 0, dragDY = 0;
   var tipEl = document.getElementById('tip'), popEl = document.getElementById('pop');
   function globeActive() { return cur > 0.6 && cur < 3.5; }
-  canvas.addEventListener('pointermove', function (e) { pointer.x = (e.clientX / window.innerWidth) * 2 - 1; pointer.y = -(e.clientY / window.innerHeight) * 2 + 1; pointerOn = true; pointerDirty = true; tipEl.style.left = e.clientX + 'px'; tipEl.style.top = e.clientY + 'px'; });
+  canvas.addEventListener('pointermove', function (e) { pointer.x = (e.clientX / window.innerWidth) * 2 - 1; pointer.y = -(e.clientY / window.innerHeight) * 2 + 1; pointerOn = true; pointerDirty = true; tipEl.style.left = e.clientX + 'px'; tipEl.style.top = e.clientY + 'px';
+    if (drag) { var dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (!drag.moved && Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) > 4) { drag.moved = true; canvas.classList.add('grab'); hoverK = -1; tipEl.classList.remove('on'); } if (drag.moved) { dragDX += dx; dragDY += dy; } drag.x = e.clientX; drag.y = e.clientY; } });
+  function endDrag(e) { if (!drag) return; if (drag.moved) window.__globeDragged = true; try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} drag = null; canvas.classList.remove('grab'); }
+  canvas.addEventListener('pointercancel', endDrag);
   canvas.addEventListener('pointerleave', function () { pointerOn = false; hoverK = -1; tipEl.classList.remove('on'); canvas.classList.remove('hot'); });
-  canvas.addEventListener('pointerdown', function (e) { downAt = [e.clientX, e.clientY]; pointer.x = (e.clientX / window.innerWidth) * 2 - 1; pointer.y = -(e.clientY / window.innerHeight) * 2 + 1; pointerDirty = true; });
-  canvas.addEventListener('pointerup', function (e) { if (!downAt) return; var moved = Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]); downAt = null; if (moved > 8) return; pick(); var k = hoverK; if (k >= 0) { openPop(k); selReg = NODES[k].block; updateRegCard(); setZoom(selReg === 5 ? 0 : 1); } else if (popK >= 0) { closePop(); } });
+  canvas.addEventListener('pointerdown', function (e) { downAt = [e.clientX, e.clientY]; pointer.x = (e.clientX / window.innerWidth) * 2 - 1; pointer.y = -(e.clientY / window.innerHeight) * 2 + 1; pointerDirty = true;
+    if (globeActive() && e.button === 0) { drag = { x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, moved: false, touch: e.pointerType === 'touch' }; velY = velX = 0; try { canvas.setPointerCapture(e.pointerId); } catch (_) {} } });
+  canvas.addEventListener('pointerup', function (e) { endDrag(e); if (!downAt) return; var moved = Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]); downAt = null; if (moved > 8) return; pick(); var k = hoverK; if (k >= 0) { openPop(k); selReg = NODES[k].block; updateRegCard(); setZoom(selReg === 5 ? 0 : 1); } else if (popK >= 0) { closePop(); } });
   function pick() {
-    pointerDirty = false; var prev = hoverK; hoverK = -1;
+    pointerDirty = false; var prev = hoverK; hoverK = -1; if (drag && drag.moved) { canvas.classList.remove('hot'); tipEl.classList.remove('on'); return; }
     if (!globeActive() || !sphere.visible) { tipEl.classList.remove('on'); canvas.classList.remove('hot'); return; }
     raycaster.setFromCamera(pointer, camera);
     var hits = raycaster.intersectObjects([sphere].concat(hitGroup.children), false);
@@ -630,7 +638,7 @@
   var zoomTarget = 0, zoomW = 0, zoomC = new THREE.Vector3();
   function setZoom(z) { zoomTarget = z; var zb = document.getElementById('reg-zoomout'); if (zb) zb.hidden = !z; }
   function pickRegional(b, fromBars) {
-    requestAnimationFrame(fitPanels); selReg = b; updateRegCard(); setZoom(b === 5 ? 0 : 1); var k = -1; NODES.forEach(function (n, i) { if (k < 0 && n.block === b) k = i; }); if (fromBars && k >= 0) openPop(k); document.querySelectorAll('button.bar').forEach(function (x) { x.classList.toggle('on', +x.getAttribute('data-reg') === b); x.setAttribute('aria-pressed', String(+x.getAttribute('data-reg') === b)); }); }
+    requestAnimationFrame(fitPanels); userY = userX = velY = velX = 0; selReg = b; updateRegCard(); setZoom(b === 5 ? 0 : 1); var k = -1; NODES.forEach(function (n, i) { if (k < 0 && n.block === b) k = i; }); if (fromBars && k >= 0) openPop(k); document.querySelectorAll('button.bar').forEach(function (x) { x.classList.toggle('on', +x.getAttribute('data-reg') === b); x.setAttribute('aria-pressed', String(+x.getAttribute('data-reg') === b)); }); }
 
   // kamera per tahap: [posisi, sasaran]; bola selalu di pusat dunia
   var ox = NARROW ? 0 : 8.5, oy = NARROW ? -16 : 0; // desktop: geser bola menjauh dari kolom teks; HP: bola di paruh atas
@@ -736,7 +744,7 @@
   function go(i, opts) {
     i = Math.max(0, Math.min(panels.length - 1, i)); opts = opts || {};
     if (!ONE) { var el = i === 5 ? document.getElementById('ikut') : panels[i]; if (el) el.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' }); return; }
-    var prev = idx; idx = i; target = Math.min(STAGES - 1, i);
+    var prev = idx; idx = i; target = Math.min(STAGES - 1, i); userY = userX = velY = velX = 0;
     panels.forEach(function (p, k) { p.classList.toggle('on', k === i); p.classList.toggle('off', k === prev && k !== i); p.setAttribute('aria-hidden', k === i ? 'false' : 'true'); if (k === i) p.removeAttribute('inert'); else p.setAttribute('inert', ''); });
     if (history.replaceState) history.replaceState(null, '', '#' + HASH[i]);
     if (!opts.silent) { var h = panels[i].querySelector('h1, h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
@@ -753,7 +761,7 @@
     // roda mouse/trackpad: satu dorongan = satu panel; ditahan 900 ms supaya trackpad tidak melompat-lompat
     var acc = 0, lastWheel = 0;
     window.addEventListener('wheel', function (e) { var box = e.target.closest && e.target.closest('.copy'); if (box && box.scrollHeight > box.clientHeight + 4) { var top = box.scrollTop <= 0 && e.deltaY < 0, bot = box.scrollTop + box.clientHeight >= box.scrollHeight - 1 && e.deltaY > 0; if (!top && !bot) return; } e.preventDefault(); var now = Date.now(); if (now - lastWheel > 700) acc = 0; acc += e.deltaY; if (Math.abs(acc) > 40 && now - lastWheel > 700) { lastWheel = now; go(idx + (acc > 0 ? 1 : -1)); acc = 0; } }, { passive: false });
-    var ty0 = null; window.addEventListener('touchstart', function (e) { ty0 = e.touches[0].clientY; }, { passive: true }); window.addEventListener('touchend', function (e) { if (ty0 == null) return; var dy = ty0 - e.changedTouches[0].clientY; ty0 = null; if (Math.abs(dy) > 60) go(idx + (dy > 0 ? 1 : -1)); }, { passive: true });
+    var ty0 = null; window.addEventListener('touchstart', function (e) { ty0 = e.touches[0].clientY; }, { passive: true }); window.addEventListener('touchend', function (e) { if (ty0 == null) return; var dy = ty0 - e.changedTouches[0].clientY; ty0 = null; if (window.__globeDragged) { window.__globeDragged = false; return; } if (Math.abs(dy) > 60) go(idx + (dy > 0 ? 1 : -1)); }, { passive: true });
     window.addEventListener('hashchange', function () { go(hashToIdx(location.hash), { silent: true }); });
     go(hashToIdx(location.hash), { silent: true }); cur = target;
     setTimeout(function () { if (!navigated) document.querySelector('.hint').classList.add('show'); }, 1400);
@@ -798,13 +806,19 @@
       pulseGeo.attributes.position.needsUpdate = true;
     }
     // putaran bola: pelan terus; saat regional dipilih, bola berputar ke arahnya; saat menjadi lambang, kembali ke sudut nol
-    if (cur > 3.5) { var zero = Math.round(rotY / (Math.PI * 2)) * Math.PI * 2; rotY += (zero - rotY) * 0.06; world.rotation.x += (0 - world.rotation.x) * 0.06; }
+    if (cur > 3.5) { var zero = Math.round(rotY / (Math.PI * 2)) * Math.PI * 2; rotY += (zero - rotY) * 0.06; world.rotation.x += (0 - world.rotation.x) * 0.06; userY = userX = 0; canvas.classList.remove('can-grab'); }
     else {
-      world.rotation.x += (tilt - world.rotation.x) * 0.06;
-      // bola tidak berputar penuh: Indonesia menghadap depan (dengan goyangan kecil), atau regional yang dipilih di tahap Terhubung/Suara
-      if (hoverK < 0 && popK < 0) swayT += dt; // bola diam saat kota disorot atau popover terbuka, supaya sasaran tidak lari
-      var want = (cur >= 1.5 && spinTarget !== null) ? spinTarget : FACE_Y + (REDUCED ? 0 : Math.sin(swayT * 0.25) * 0.28);
-      var dlt = want - rotY; dlt = Math.atan2(Math.sin(dlt), Math.cos(dlt)); rotY += dlt * 0.045;
+      // seretan pengguna: satu lebar layar ≈ setengah putaran; sumbu tegak hanya dari mouse (di layar sentuh sumbu tegak untuk menggulir)
+      var kd = Math.PI / Math.max(320, W);
+      if (drag && drag.moved) { velY = dragDX * kd; velX = drag.touch ? 0 : dragDY * kd * 0.6; dragDX = dragDY = 0; }
+      else { velY *= 0.92; velX *= 0.92; if (Math.abs(velY) < 1e-4) velY = 0; if (Math.abs(velX) < 1e-4) velX = 0; }
+      userY += velY; userX = Math.max(-0.6, Math.min(0.6, userX + velX));
+      world.rotation.x += ((tilt + userX) - world.rotation.x) * 0.06;
+      // bola tidak berputar penuh: Indonesia menghadap depan (dengan goyangan kecil), atau regional yang dipilih di tahap Terhubung/Suara; ditambah putaran dari seretan
+      if (hoverK < 0 && popK < 0 && !drag) swayT += dt; // bola diam saat kota disorot, popover terbuka, atau sedang diseret
+      var want = ((cur >= 1.5 && spinTarget !== null) ? spinTarget : FACE_Y + (REDUCED ? 0 : Math.sin(swayT * 0.25) * 0.28)) + userY;
+      var dlt = want - rotY; dlt = Math.atan2(Math.sin(dlt), Math.cos(dlt)); rotY += dlt * ((drag && drag.moved) ? 0.5 : 0.045);
+      canvas.classList.toggle('can-grab', true);
     }
     world.rotation.y = rotY;
     // kamera
